@@ -170,7 +170,7 @@ function initDB(){
  if(dbOpening)return dbOpening;
  dbOpening=new Promise((resolve,reject)=>{
   if(!('indexedDB' in window)){reject(new Error('Deze browser ondersteunt geen kledingopslag.'));return}
-  let req;try{req=indexedDB.open('mijn-kledingkast-test-v1',2)}catch(error){reject(error);return}
+  let req;try{req=indexedDB.open('mijn-kledingkast-live-v1',2)}catch(error){reject(error);return}
   req.onupgradeneeded=()=>{if(!req.result.objectStoreNames.contains('items'))req.result.createObjectStore('items',{keyPath:'id'});if(!req.result.objectStoreNames.contains('looks'))req.result.createObjectStore('looks',{keyPath:'id'})};
   req.onsuccess=()=>{db=req.result;db.onversionchange=()=>{db.close();db=null;dbOpening=null};resolve(db)};
   req.onerror=()=>reject(req.error||new Error('De database kon niet worden geopend.'));
@@ -240,7 +240,7 @@ let html='<div class="look"><h3>Jouw outfit</h3><div class="look-grid">'+safeLoo
 $('makeLook').onclick=makeLook;
 
 // Versie 6: extra functies zonder wijziging van bestaande IndexedDB-kledingopslag.
-const V6_KEY='mijn-kledingkast-test-v6-agenda';let v6Chosen=[];let v6Generated=[];
+const V6_KEY='mijn-kledingkast-live-v6-agenda';let v6Chosen=[];let v6Generated=[];
 function v6AgendaRead(){try{let x=JSON.parse(localStorage.getItem(V6_KEY)||'[]');return Array.isArray(x)?x:[]}catch{return []}}
 function v6AgendaWrite(x){try{localStorage.setItem(V6_KEY,JSON.stringify(x));return true}catch{alert('Agenda opslaan lukt niet. Maak een extra back-up.');return false}}
 function v6Date(){let d=new Date();return [d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-')}
@@ -262,11 +262,11 @@ $('agendaSuggest').onclick=()=>{v6Chosen=v6Outfit(Math.floor(Date.now()/1000)%17
 function v6SaveLook(look){if(!look.length){alert('Maak eerst een outfit.');return}let date=$('agendaDate').value||v6Date(),entry={uid:'v6-'+Date.now()+'-'+Math.floor(Math.random()*10000),date,occ:$('agendaOcc').value,note:$('agendaNote').value.trim(),ids:look.map(p=>p.x.id)};let a=v6AgendaRead();a.push(entry);if(v6AgendaWrite(a)){v6ShowAgenda();alert('Outfit bewaard voor '+date)}}
 $('agendaSave').onclick=()=>v6SaveLook(v6Chosen);
 document.addEventListener('click',e=>{let save=e.target.closest('[data-v6save]');if(save){let look=v6Generated[Number(save.dataset.v6save)];if(look){showTab('agenda');v6Chosen=look;$('agendaPreview').innerHTML=v6SetHtml(look,'Gekozen outfit');$('agendaDate').value=v6Date()}}let del=e.target.closest('[data-agendadel]');if(del&&confirm('Deze geplande outfit verwijderen?')){v6AgendaWrite(v6AgendaRead().filter(x=>x.uid!==del.dataset.agendadel));v6ShowAgenda()}});
-$('v6Export').onclick=()=>v6Download('mijn-kledingkast-agenda-backup.json',JSON.stringify({format:'mijn-kledingkast-test-v6-agenda',version:1,entries:v6AgendaRead()},null,2),'application/json');
-$('v6Import').onclick=()=>$('v6ImportFile').click();$('v6ImportFile').onchange=async e=>{let f=e.target.files[0];if(!f)return;try{let obj=JSON.parse(await f.text());if(obj.format!=='mijn-kledingkast-test-v6-agenda'||!Array.isArray(obj.entries))throw Error('Ongeldig agendabestand');let current=v6AgendaRead(),ids=new Set(current.map(x=>x.uid));for(let x of obj.entries){if(typeof x.uid==='string'&&typeof x.date==='string'&&Array.isArray(x.ids)&&!ids.has(x.uid)){current.push(x);ids.add(x.uid)}}if(v6AgendaWrite(current)){v6ShowAgenda();alert('Agenda hersteld.')}}catch(err){alert('Herstellen mislukt: '+err.message)}e.target.value=''};
+$('v6Export').onclick=()=>v6Download('mijn-kledingkast-agenda-backup.json',JSON.stringify({format:'mijn-kledingkast-live-v6-agenda',version:1,entries:v6AgendaRead()},null,2),'application/json');
+$('v6Import').onclick=()=>$('v6ImportFile').click();$('v6ImportFile').onchange=async e=>{let f=e.target.files[0];if(!f)return;try{let obj=JSON.parse(await f.text());if(obj.format!=='mijn-kledingkast-live-v6-agenda'||!Array.isArray(obj.entries))throw Error('Ongeldig agendabestand');let current=v6AgendaRead(),ids=new Set(current.map(x=>x.uid));for(let x of obj.entries){if(typeof x.uid==='string'&&typeof x.date==='string'&&Array.isArray(x.ids)&&!ids.has(x.uid)){current.push(x);ids.add(x.uid)}}if(v6AgendaWrite(current)){v6ShowAgenda();alert('Agenda hersteld.')}}catch(err){alert('Herstellen mislukt: '+err.message)}e.target.value=''};
 
 // Versie 7: pasvorm, favorieten, draagregistratie en gewogen vakantiekoffer.
-const V7_KEY='mijn-kledingkast-test-v7-extras';
+const V7_KEY='mijn-kledingkast-live-v7-extras';
 function v7Read(){try{return JSON.parse(localStorage.getItem(V7_KEY)||'{}')}catch{return {}}}
 function v7Write(data){try{localStorage.setItem(V7_KEY,JSON.stringify(data))}catch{alert('Opslag is vol. Maak een back-up.')}}
 function defaultFit(x){return ['Schoenen','Tassen','Sieraden & accessoires'].includes(displayCategory(x))?'Past altijd':'Comfort'}
@@ -287,8 +287,8 @@ let v7TravelChosen=[];
 function v7RenderTravel(place,days){let total=v7TravelChosen.reduce((a,x)=>a+v7Weight(x),0),max=Math.max(0.5,Number($('travelMax').value)||15)*1000,remaining=max-total;let heading='Paklijst'+(place?' – '+place:'')+' ('+days+' dagen)';$('travelResults').innerHTML='<h3>'+esc(heading)+'</h3><p>Wassen onderweg: <strong>'+($('travelWash').value==='yes'?'ja':'nee')+'</strong></p><p><strong>Geschat kledinggewicht: '+(total/1000).toFixed(2)+' kg</strong> / '+(max/1000).toFixed(1)+' kg maximaal</p><div style="height:12px;background:#eee7dc;border-radius:9px;overflow:hidden"><div style="width:'+Math.min(100,100*total/max)+'%;height:100%;background:'+(total>max?'#bb665e':'#8eaa8c')+'"></div></div><p>'+(remaining<0?'⚠ '+(-remaining/1000).toFixed(2)+' kg boven je maximum':(remaining/1000).toFixed(2)+' kg ruimte over')+'</p><p class="v6-note">Alleen kleding, schoenen en accessoires; geen koffer, toiletartikelen of andere bagage. Dit zijn schattingen.</p><div class="v6-cards">'+v7TravelChosen.map(x=>'<div class="v6-card">'+(x.photo?'<img src="'+x.photo+'" alt="'+esc(x.name)+'">':'')+'<div class="desc"><strong>'+esc(x.name)+'</strong><small>'+v7Weight(x)+' gram</small><button class="btn" data-v7travelremove="'+esc(x.id)+'">Verwijderen</button></div></div>').join('')+'</div><h3>Voeg kleding toe</h3><select id="v7TravelAdd"><option value="">Kies kledingstuk…</option>'+items.filter(x=>fitAllowed(x)&&!v7TravelChosen.some(y=>y.id===x.id)).map(x=>'<option value="'+esc(x.id)+'">'+esc(x.name)+'</option>').join('')+'</select><button class="btn" id="v7TravelAddButton">Toevoegen</button><p><button class="btn" id="v7TravelDownload">↓ Download paklijst</button></p>';$('v7TravelAddButton').onclick=()=>{let x=items.find(x=>x.id===$('v7TravelAdd').value);if(x){v7TravelChosen.push(x);v7RenderTravel(place,days)}};$('v7TravelDownload').onclick=()=>v6Download('mijn-paklijst.txt',heading+'\nGeschat kledinggewicht: '+(total/1000).toFixed(2)+' kg\n\n'+v7TravelChosen.map(x=>'[ ] '+x.name+' ('+v7Weight(x)+' gram)').join('\n'),'text/plain;charset=utf-8');$('travelResults').querySelectorAll('[data-v7travelremove]').forEach(b=>b.onclick=()=>{v7TravelChosen=v7TravelChosen.filter(x=>x.id!==b.dataset.v7travelremove);v7RenderTravel(place,days)})}
 $('travelMax').addEventListener('input',()=>{if(v7TravelChosen.length)v7RenderTravel($('travelPlace').value.trim(),Number($('travelDays').value)||7)});
 // De bestaande v6-agenda-export blijft werken; voor v7-extra's is er een aparte export.
-let backup=document.createElement('button');backup.className='btn';backup.textContent='↓ Back-up favorieten en draaghistorie';backup.onclick=()=>v6Download('kledingkast-v7-extra-backup.json',JSON.stringify({format:'mijn-kledingkast-test-v7-extras',data:v7Read()},null,2),'application/json');$('favoritesPanel').append(backup);
-let restore=document.createElement('input');restore.type='file';restore.accept='.json,application/json';restore.hidden=true;restore.onchange=async()=>{let f=restore.files[0];if(!f)return;try{let o=JSON.parse(await f.text());if(o.format!=='mijn-kledingkast-test-v7-extras'||!o.data||typeof o.data!=='object')throw Error('Ongeldig bestand');if(confirm('Favorieten en draaghistorie herstellen?')){v7Write(o.data);v7RenderFavorites();alert('Hersteld.')}}catch(e){alert(e.message)}restore.value=''};$('favoritesPanel').append(restore);let b=document.createElement('button');b.className='btn';b.textContent='↑ Extra back-up herstellen';b.onclick=()=>restore.click();$('favoritesPanel').append(b);
+let backup=document.createElement('button');backup.className='btn';backup.textContent='↓ Back-up favorieten en draaghistorie';backup.onclick=()=>v6Download('kledingkast-v7-extra-backup.json',JSON.stringify({format:'mijn-kledingkast-live-v7-extras',data:v7Read()},null,2),'application/json');$('favoritesPanel').append(backup);
+let restore=document.createElement('input');restore.type='file';restore.accept='.json,application/json';restore.hidden=true;restore.onchange=async()=>{let f=restore.files[0];if(!f)return;try{let o=JSON.parse(await f.text());if(o.format!=='mijn-kledingkast-live-v7-extras'||!o.data||typeof o.data!=='object')throw Error('Ongeldig bestand');if(confirm('Favorieten en draaghistorie herstellen?')){v7Write(o.data);v7RenderFavorites();alert('Hersteld.')}}catch(e){alert(e.message)}restore.value=''};$('favoritesPanel').append(restore);let b=document.createElement('button');b.className='btn';b.textContent='↑ Extra back-up herstellen';b.onclick=()=>restore.click();$('favoritesPanel').append(b);
 
 // Versie 8: zelf favoriete combinaties maken en zelf de koffer vullen.
 let v8ChosenIds=[];
@@ -329,7 +329,7 @@ $('todayGenerate').onclick=()=>v8Today(false);
 $('surpriseGenerate').onclick=()=>v8Today(true);
 $('travelGenerate').onclick=()=>v7RenderTravel($('travelPlace').value.trim(),Math.max(1,Number($('travelDays').value)||7));
 // Herteken het keuzescherm als het tabblad wordt geopend; bewaar de selectie op dit apparaat.
-const V8_TRAVEL_KEY='mijn-kledingkast-test-v8-travel';
+const V8_TRAVEL_KEY='mijn-kledingkast-live-v8-travel';
 try{let old=JSON.parse(localStorage.getItem(V8_TRAVEL_KEY)||'[]');if(Array.isArray(old))v7TravelChosen=old.map(id=>items.find(x=>String(x.id)===String(id))).filter(Boolean)}catch{}
 const v8TravelOriginal=v7RenderTravel;
 v7RenderTravel=function(place,days){v7TravelChosen=v7TravelChosen.map(x=>items.find(y=>String(y.id)===String(x.id))).filter(Boolean);v8TravelOriginal(place,days);try{localStorage.setItem(V8_TRAVEL_KEY,JSON.stringify(v7TravelChosen.map(x=>x.id)))}catch{}};
@@ -343,12 +343,12 @@ for(const select of document.querySelectorAll('select'))for(const opt of select.
 for(const lab of document.querySelectorAll('#occasions label')){const inp=lab.querySelector('input');if(inp&&labels[inp.value]){for(const n of lab.childNodes)if(n.nodeType===3)n.textContent=' '+labels[inp.value]}}
 const currentSeason=()=>{const m=new Date().getMonth()+1;return m>=3&&m<=8?'Lente/Zomer':'Herfst/Winter'};
 $('todaySeason').value=currentSeason();
-const holidayKey='mijn-kledingkast-test-v11-holiday';let holiday=localStorage.getItem(holidayKey)==='yes';
+const holidayKey='mijn-kledingkast-live-v11-holiday';let holiday=localStorage.getItem(holidayKey)==='yes';
 function setHoliday(on){holiday=!!on;$('v11Holiday').checked=holiday;$('v11HolidayTravel').checked=holiday;localStorage.setItem(holidayKey,holiday?'yes':'no');generate()}
 $('v11Holiday').checked=holiday;$('v11HolidayTravel').checked=holiday;
 $('v11Holiday').onchange=e=>setHoliday(e.target.checked);$('v11HolidayTravel').onchange=e=>setHoliday(e.target.checked);
 function suitcase(){let ids=[];try{ids=JSON.parse(localStorage.getItem(V8_TRAVEL_KEY)||'[]')}catch{};return new Set(ids.map(String))}
-function v13WashData(){try{return JSON.parse(localStorage.getItem('mijn-kledingkast-test-v13-wash')||'{}')}catch{return {}}}
+function v13WashData(){try{return JSON.parse(localStorage.getItem('mijn-kledingkast-live-v13-wash')||'{}')}catch{return {}}}
 function v13LaundryExcluded(x){if(holiday)return false;const cat=displayCategory(x);if(!['Broeken','Blouses & tops'].includes(cat))return false;const until=v13WashData()[String(x.id)];return !!until && Date.now()<new Date(until+'T23:59:59').getTime()}
 function pool(){const ids=suitcase();return items.filter(x=>(holiday?ids.has(String(x.id)):fitAllowed(x))&&!v13LaundryExcluded(x)&&!v16Special(x))}
 function v16Special(x){return /pantoffel|regenlaars|regenjas/i.test([x.name,x.category,x.notes].join(' '))}
@@ -373,7 +373,7 @@ function four(arr){return '<div class="v11-photos">'+arr.map(photo).join('')+'</
 function v13Festive(x){return (x.occasions||[]).some(v=>v9Occ(v)==='Party')||x.festive===true||x.feestelijk===true||String(x.style||'').toLowerCase()==='feestelijk'}
 function v13PartyValid(look){return look.some(x=>v13Festive(x)&&['top','bottom','dress'].includes(group(x)))}
 function v13PartyAllOut(available,season){const festive=available.filter(x=>v13Festive(x)&&eligible(x,season));let best=null;for(let n=0;n<70;n++){const look=makeNew(festive,season,'Party',n*17+3,'chic');if(look&&v13PartyValid(look)){best=look;break}}return best}
-const V16_ROTATION='mijn-kledingkast-test-v16-favorite-rotation';
+const V16_ROTATION='mijn-kledingkast-live-v16-favorite-rotation';
 function v16FavRotation(favs,count){
  let history=[];try{history=JSON.parse(localStorage.getItem(V16_ROTATION)||'[]')}catch{}
  const ids=favs.map(f=>String(f.f.id));history=history.filter(id=>ids.includes(id));
@@ -453,9 +453,9 @@ setTimeout(()=>{v7RenderFavorites();},0);
 
 
 // v13: wasperiode begint bij outfitwissel of na drie geregistreerde draagdagen.
-$('todayResults').addEventListener('click',e=>{const b=e.target.closest('[data-v11pick]');if(!b||holiday)return;const chosen=generated[Number(b.dataset.v11pick)];if(!chosen)return;const now=v6Date(),agenda=v6AgendaRead();const current=agenda.find(a=>a.date===now&&a.v11Selected);if(!current||signature(current.ids.map(id=>({id})))!==signature(chosen.look))return;const previous=agenda.filter(a=>a.date<now&&a.v11Selected).sort((a,b)=>b.date.localeCompare(a.date))[0];const wash=v13WashData();const currentIds=new Set(chosen.look.map(x=>String(x.id)));const relevant=x=>['Broeken','Blouses & tops'].includes(displayCategory(x));const end=new Date(now+'T12:00:00');end.setDate(end.getDate()+7);const until=end.toISOString().slice(0,10);if(previous&&previous.date>(localStorage.getItem('mijn-kledingkast-test-v16-last-wash')||'0000-00-00')){for(const id of previous.ids||[]){const x=items.find(z=>String(z.id)===String(id));if(x&&relevant(x)&&!currentIds.has(String(id)))wash[String(id)]=until;}}
-for(const x of chosen.look){if(!relevant(x))continue;const dates=new Set(agenda.filter(a=>a.v11Selected&&a.ids.some(id=>String(id)===String(x.id))).map(a=>a.date));if([...dates].filter(d=>d>(localStorage.getItem('mijn-kledingkast-test-v16-last-wash')||'0000-00-00')).length>=3)wash[String(x.id)]=until;}
-localStorage.setItem('mijn-kledingkast-test-v13-wash',JSON.stringify(wash));});
+$('todayResults').addEventListener('click',e=>{const b=e.target.closest('[data-v11pick]');if(!b||holiday)return;const chosen=generated[Number(b.dataset.v11pick)];if(!chosen)return;const now=v6Date(),agenda=v6AgendaRead();const current=agenda.find(a=>a.date===now&&a.v11Selected);if(!current||signature(current.ids.map(id=>({id})))!==signature(chosen.look))return;const previous=agenda.filter(a=>a.date<now&&a.v11Selected).sort((a,b)=>b.date.localeCompare(a.date))[0];const wash=v13WashData();const currentIds=new Set(chosen.look.map(x=>String(x.id)));const relevant=x=>['Broeken','Blouses & tops'].includes(displayCategory(x));const end=new Date(now+'T12:00:00');end.setDate(end.getDate()+7);const until=end.toISOString().slice(0,10);if(previous&&previous.date>(localStorage.getItem('mijn-kledingkast-live-v16-last-wash')||'0000-00-00')){for(const id of previous.ids||[]){const x=items.find(z=>String(z.id)===String(id));if(x&&relevant(x)&&!currentIds.has(String(id)))wash[String(id)]=until;}}
+for(const x of chosen.look){if(!relevant(x))continue;const dates=new Set(agenda.filter(a=>a.v11Selected&&a.ids.some(id=>String(id)===String(x.id))).map(a=>a.date));if([...dates].filter(d=>d>(localStorage.getItem('mijn-kledingkast-live-v16-last-wash')||'0000-00-00')).length>=3)wash[String(x.id)]=until;}
+localStorage.setItem('mijn-kledingkast-live-v13-wash',JSON.stringify(wash));});
 
 // Versie 12: uitsluitend uitbreidingen; IndexedDB en bestaande localStorage-sleutels blijven behouden.
 const V12_LABELS={'Kantoor formeel':'Chic de la chic','Kantoor informeel':'Werk aan de winkel','Thuis':'Lekker thuis','Vrije tijd':'De hort op','Uitjes':'Een avondje uit','Uitje':'Een avondje uit','Party':'Tijd om te schitteren','Feestelijk':'Tijd om te schitteren'};
@@ -466,19 +466,19 @@ v6ShowAgenda=function(){const a=v6AgendaRead().sort((x,y)=>y.date.localeCompare(
 v7RenderUnworn=function(){const d=v7Read(),today=v6Date(),yearAgo=v7AddMonths(today,-12);const listed=items.filter(x=>{const last=d.lastWorn?.[x.id];return !last||last<=yearAgo}).sort((a,b)=>String(a.name).localeCompare(String(b.name),'nl'));$('unwornResults').innerHTML='<p class="v6-note">'+listed.length+' van '+items.length+' kledingstukken op de lijst. Gedragen kleding verdwijnt automatisch en komt na een jaar zonder dragen weer terug.</p>'+(listed.length?'<div class="v12-travel-grid">'+listed.map(x=>'<div class="v6-set"><div class="v12-four" style="display:block;max-width:140px">'+photo(x)+'</div><strong>'+esc(x.name)+'</strong><p class="v6-note">'+(d.lastWorn?.[x.id]?'Laatst gedragen: '+esc(d.lastWorn[x.id]):'Nog niet gedragen')+'</p><button class="btn" data-v7worn="'+esc(x.id)+'">Vandaag gedragen</button></div>').join('')+'</div>':'<p>Alles is in het afgelopen jaar gedragen! ✨</p>')};
 // Vakantiekoffer: foto's in plaats van tekstselectie, met actuele gewichtsteller.
 function v13GroupedPhotos(xs,selected,mode){const groups=categoryOrder.map(cat=>[cat,xs.filter(x=>displayCategory(x)===cat)]).filter(([cat,arr])=>arr.length);return groups.map(([cat,arr])=>'<section class="v13-category"><h4>'+esc(cat)+'</h4><div class="v13-photo-grid">'+arr.map(x=>'<button type="button" class="v13-photo '+(fitOf(x)==='Slank'?'v13-slim-card ':'')+(selected.has(String(x.id))?'v13-selected':'')+'" data-v13-'+mode+'="'+esc(String(x.id))+'" aria-label="'+esc(x.name)+'">'+photo(x)+(selected.has(String(x.id))?'<span class="v13-tick">✓</span>':'')+'</button>').join('')+'</div></section>').join('')}
-function v12Travel(){const chosen=suitcase(),packed=items.filter(x=>chosen.has(String(x.id))),total=packed.reduce((sum,x)=>sum+v7Weight(x),0),max=Math.max(.5,Number($('travelMax').value)||15)*1000;const panel=$('travelResults');panel.innerHTML='<div class="v12-weight"><strong>'+chosen.size+' kledingstukken · '+(total/1000).toFixed(2)+' kg van '+(max/1000).toFixed(1)+' kg</strong></div><h3>Mijn koffer</h3>'+(packed.length?v13GroupedPhotos(packed,chosen,'remove'):'<p>Je koffer is nog leeg.</p>')+'<button class="btn" id="v13WasDone" hidden style="display:none"></button><h3>Kleding uitzoeken</h3>'+v13GroupedPhotos(items,chosen,'toggle')+'<button class="btn" id="v12TravelDownload" hidden style="display:none"></button>';panel.querySelectorAll('[data-v13-toggle],[data-v13-remove]').forEach(b=>b.onclick=()=>{const ids=suitcase(),id=b.dataset.v13Toggle||b.dataset.v13Remove;if(b.dataset.v13Remove||ids.has(id))ids.delete(id);else ids.add(id);localStorage.setItem(V8_TRAVEL_KEY,JSON.stringify([...ids]));v7TravelChosen=[...ids].map(k=>items.find(x=>String(x.id)===k)).filter(Boolean);v12Travel();if(holiday)generate()});$('v13WasDone').onclick=()=>{localStorage.setItem('mijn-kledingkast-test-v13-holiday-wash',v6Date());alert('Alle kleding in je vakantiekoffer is weer als schoon geregistreerd.')};$('v12TravelDownload').onclick=()=>v6Download('mijn-paklijst.txt',packed.map(x=>'[ ] '+x.name).join('\n'),'text/plain;charset=utf-8')}
+function v12Travel(){const chosen=suitcase(),packed=items.filter(x=>chosen.has(String(x.id))),total=packed.reduce((sum,x)=>sum+v7Weight(x),0),max=Math.max(.5,Number($('travelMax').value)||15)*1000;const panel=$('travelResults');panel.innerHTML='<div class="v12-weight"><strong>'+chosen.size+' kledingstukken · '+(total/1000).toFixed(2)+' kg van '+(max/1000).toFixed(1)+' kg</strong></div><h3>Mijn koffer</h3>'+(packed.length?v13GroupedPhotos(packed,chosen,'remove'):'<p>Je koffer is nog leeg.</p>')+'<button class="btn" id="v13WasDone" hidden style="display:none"></button><h3>Kleding uitzoeken</h3>'+v13GroupedPhotos(items,chosen,'toggle')+'<button class="btn" id="v12TravelDownload" hidden style="display:none"></button>';panel.querySelectorAll('[data-v13-toggle],[data-v13-remove]').forEach(b=>b.onclick=()=>{const ids=suitcase(),id=b.dataset.v13Toggle||b.dataset.v13Remove;if(b.dataset.v13Remove||ids.has(id))ids.delete(id);else ids.add(id);localStorage.setItem(V8_TRAVEL_KEY,JSON.stringify([...ids]));v7TravelChosen=[...ids].map(k=>items.find(x=>String(x.id)===k)).filter(Boolean);v12Travel();if(holiday)generate()});$('v13WasDone').onclick=()=>{localStorage.setItem('mijn-kledingkast-live-v13-holiday-wash',v6Date());alert('Alle kleding in je vakantiekoffer is weer als schoon geregistreerd.')};$('v12TravelDownload').onclick=()=>v6Download('mijn-paklijst.txt',packed.map(x=>'[ ] '+x.name).join('\n'),'text/plain;charset=utf-8')}
 
 v7RenderTravel=function(){v12Travel()};
 $('travelGenerate').onclick=v12Travel;
 $('travelMax').addEventListener('change',v12Travel);
-const V12_SETTINGS='mijn-kledingkast-test-v12-travel-settings';
+const V12_SETTINGS='mijn-kledingkast-live-v12-travel-settings';
 try{const saved=JSON.parse(localStorage.getItem(V12_SETTINGS)||'{}');for(const [id,value] of Object.entries(saved))if($(id))$(id).value=value}catch{}
 for(const id of ['travelPlace','travelDays','travelClimate','travelWash','travelType','travelMax'])$(id).addEventListener('change',()=>{const values={};for(const key of ['travelPlace','travelDays','travelClimate','travelWash','travelType','travelMax'])values[key]=$(key).value;localStorage.setItem(V12_SETTINGS,JSON.stringify(values))});
 // Bewaar ook alle kofferinstellingen en alle door de app gebruikte opslagwaarden.
-const v12StorageKeys=[V7_KEY,V6_KEY,V8_TRAVEL_KEY,'mijn-kledingkast-test-v11-holiday'];
-$('export').onclick=()=>{const stored={};for(let i=0;i<localStorage.length;i++){const key=localStorage.key(i);if(key&&key.startsWith('mijn-kledingkast-test-'))stored[key]=localStorage.getItem(key)}const travelSettings={};for(const id of ['travelPlace','travelDays','travelClimate','travelWash','travelType','travelMax'])travelSettings[id]=$(id).value;v6Download('mijn-kledingkast-compleet-'+v6Date()+'.json',JSON.stringify({format:'mijn-kledingkast',version:12,exported:new Date().toISOString(),items,extras:v7Read(),agenda:v6AgendaRead(),travelIds:[...suitcase()],holiday,stored,travelSettings},null,2),'application/json')};
+const v12StorageKeys=[V7_KEY,V6_KEY,V8_TRAVEL_KEY,'mijn-kledingkast-live-v11-holiday'];
+$('export').onclick=()=>{const stored={};for(let i=0;i<localStorage.length;i++){const key=localStorage.key(i);if(key&&key.startsWith('mijn-kledingkast-live-'))stored[key]=localStorage.getItem(key)}const travelSettings={};for(const id of ['travelPlace','travelDays','travelClimate','travelWash','travelType','travelMax'])travelSettings[id]=$(id).value;v6Download('mijn-kledingkast-compleet-'+v6Date()+'.json',JSON.stringify({format:'mijn-kledingkast',version:12,exported:new Date().toISOString(),items,extras:v7Read(),agenda:v6AgendaRead(),travelIds:[...suitcase()],holiday,stored,travelSettings},null,2),'application/json')};
 const v11Import=$('importFile').onchange;
-$('importFile').onchange=async e=>{const f=e.target.files[0];if(!f)return;let obj;try{obj=JSON.parse(await f.text())}catch{alert('Dit is geen geldig JSON-bestand.');e.target.value='';return}if(obj.version!==12||!obj.stored){return v11Import(e)}if(obj.format!=='mijn-kledingkast'||!Array.isArray(obj.items)){alert('Geen geldige back-up.');return}if(!confirm('Volledige back-up herstellen? Bestaande kledingstukken worden bijgewerkt en de opgeslagen instellingen uit de back-up worden teruggezet.'))return;try{for(const x of obj.items)if(typeof x.id==='string'&&typeof x.name==='string')await put(v9Normalize(x));for(const [key,value] of Object.entries(obj.stored))if(key.startsWith('mijn-kledingkast-test-')&&typeof value==='string')localStorage.setItem(key,value);if(obj.travelSettings)for(const [id,value] of Object.entries(obj.travelSettings))if($(id))$(id).value=value;items=await getAll();v7TravelChosen=[...suitcase()].map(id=>items.find(x=>String(x.id)===id)).filter(Boolean);holiday=localStorage.getItem(holidayKey)==='yes';$('v11Holiday').checked=holiday;$('v11HolidayTravel').checked=holiday;render();v8RenderPicker();v7RenderFavorites();v12Travel();v6ShowAgenda();v7RenderUnworn();generate();alert('Back-up hersteld. Controleer de kledingkast, favorieten, agenda en koffer.')}catch(err){alert('Herstellen mislukt: '+err.message)}finally{e.target.value=''}};
+$('importFile').onchange=async e=>{const f=e.target.files[0];if(!f)return;let obj;try{obj=JSON.parse(await f.text())}catch{alert('Dit is geen geldig JSON-bestand.');e.target.value='';return}if(obj.version!==12||!obj.stored){return v11Import(e)}if(obj.format!=='mijn-kledingkast'||!Array.isArray(obj.items)){alert('Geen geldige back-up.');return}if(!confirm('Volledige back-up herstellen? Bestaande kledingstukken worden bijgewerkt en de opgeslagen instellingen uit de back-up worden teruggezet.'))return;try{for(const x of obj.items)if(typeof x.id==='string'&&typeof x.name==='string')await put(v9Normalize(x));for(const [key,value] of Object.entries(obj.stored))if(key.startsWith('mijn-kledingkast-live-')&&typeof value==='string')localStorage.setItem(key,value);if(obj.travelSettings)for(const [id,value] of Object.entries(obj.travelSettings))if($(id))$(id).value=value;items=await getAll();v7TravelChosen=[...suitcase()].map(id=>items.find(x=>String(x.id)===id)).filter(Boolean);holiday=localStorage.getItem(holidayKey)==='yes';$('v11Holiday').checked=holiday;$('v11HolidayTravel').checked=holiday;render();v8RenderPicker();v7RenderFavorites();v12Travel();v6ShowAgenda();v7RenderUnworn();generate();alert('Back-up hersteld. Controleer de kledingkast, favorieten, agenda en koffer.')}catch(err){alert('Herstellen mislukt: '+err.message)}finally{e.target.value=''}};
 
 // Compacte weggooilijst met vier foto's naast elkaar.
 v7RenderUnworn=function(){const d=v7Read(),today=v6Date(),yearAgo=v7AddMonths(today,-12),tracking=d.trackingStart||today;const listed=items.filter(x=>{const last=d.lastWorn?.[x.id];if(last)return last<=yearAgo;const first=(typeof x.createdAt==='string'&&/^\d{4}-\d{2}-\d{2}/.test(x.createdAt))?x.createdAt.slice(0,10):tracking;return first<=yearAgo}).sort((a,b)=>String(a.name).localeCompare(String(b.name),'nl'));$('unwornResults').innerHTML='<p class="v6-note">'+listed.length+' kledingstukken</p><div class="v13-photo-grid">'+listed.map(x=>'<button type="button" class="v13-photo '+(fitOf(x)==='Slank'?'v13-slim-card':'')+'" data-v13unworn="'+esc(String(x.id))+'" title="'+esc(x.name)+'">'+photo(x)+'</button>').join('')+'</div>';};
@@ -515,15 +515,15 @@ $('favoritesResults').addEventListener('click',e=>{
  if(!holiday){const wash=v13WashData(),relevant=x=>['Broeken','Blouses & tops'].includes(displayCategory(x));
  const previous=newAgenda.filter(a=>a.date<date&&a.v11Selected).sort((a,b)=>b.date.localeCompare(a.date))[0];
  const end=new Date(date+'T12:00:00');end.setDate(end.getDate()+7);const until=end.toISOString().slice(0,10);
- if(previous&&previous.date>(localStorage.getItem('mijn-kledingkast-test-v16-last-wash')||'0000-00-00'))for(const id of previous.ids||[]){const x=items.find(z=>String(z.id)===String(id));if(x&&relevant(x)&&!ids.includes(String(id)))wash[String(id)]=until}
- for(const x of clothes){if(!relevant(x))continue;const dates=new Set(newAgenda.filter(a=>a.v11Selected&&(a.ids||[]).some(id=>String(id)===String(x.id))).map(a=>a.date));if([...dates].filter(d=>d>(localStorage.getItem('mijn-kledingkast-test-v16-last-wash')||'0000-00-00')).length>=3)wash[String(x.id)]=until}
- localStorage.setItem('mijn-kledingkast-test-v13-wash',JSON.stringify(wash));}
+ if(previous&&previous.date>(localStorage.getItem('mijn-kledingkast-live-v16-last-wash')||'0000-00-00'))for(const id of previous.ids||[]){const x=items.find(z=>String(z.id)===String(id));if(x&&relevant(x)&&!ids.includes(String(id)))wash[String(id)]=until}
+ for(const x of clothes){if(!relevant(x))continue;const dates=new Set(newAgenda.filter(a=>a.v11Selected&&(a.ids||[]).some(id=>String(id)===String(x.id))).map(a=>a.date));if([...dates].filter(d=>d>(localStorage.getItem('mijn-kledingkast-live-v16-last-wash')||'0000-00-00')).length>=3)wash[String(x.id)]=until}
+ localStorage.setItem('mijn-kledingkast-live-v13-wash',JSON.stringify(wash));}
  v6ShowAgenda();v7RenderUnworn();generate();v7RenderFavorites();alert('Favoriete outfit vandaag als gedragen geregistreerd.');
 });
 // Kofferselectie wordt opnieuw gelezen bij iedere wissel naar de outfitvoorstellen.
 const v14OldSetHoliday=setHoliday;setHoliday=function(on){v7TravelChosen=[...suitcase()].map(id=>items.find(x=>String(x.id)===id)).filter(Boolean);v14OldSetHoliday(on)};
 // Versie 16: koffergewicht exclusief kleding die tijdens de reis gedragen wordt.
-const V16_WEAR='mijn-kledingkast-test-v16-reiskleding';
+const V16_WEAR='mijn-kledingkast-live-v16-reiskleding';
 function v16WearIds(){try{return new Set(JSON.parse(localStorage.getItem(V16_WEAR)||'[]').map(String))}catch{return new Set()}}
 const v16OriginalTravel=v12Travel;
 v12Travel=function(){v16OriginalTravel();const packed=items.filter(x=>suitcase().has(String(x.id))),worn=v16WearIds();
@@ -553,7 +553,7 @@ $('agendaEntries').addEventListener('click',e=>{const b=e.target.closest('[data-
  v7Write(data);v6ShowAgenda();v7RenderUnworn();
 });
 // Backup: vaste bestandsnaam. iOS kan bij downloaden een nummer toevoegen.
-$('export').onclick=()=>{const stored={};for(let i=0;i<localStorage.length;i++){const key=localStorage.key(i);if(key&&key.startsWith('mijn-kledingkast-test-'))stored[key]=localStorage.getItem(key)}
+$('export').onclick=()=>{const stored={};for(let i=0;i<localStorage.length;i++){const key=localStorage.key(i);if(key&&key.startsWith('mijn-kledingkast-live-'))stored[key]=localStorage.getItem(key)}
  v6Download('Mijn_Kledingkast_Backup.json',JSON.stringify({format:'mijn-kledingkast',version:12,exported:new Date().toISOString(),items,extras:v7Read(),agenda:v6AgendaRead(),travelIds:[...suitcase()],stored,travelSettings:Object.fromEntries(['travelPlace','travelDays','travelClimate','travelWash','travelType','travelMax'].map(id=>[id,$(id).value]))},null,2),'application/json')};
 $('todayPanel').querySelector('p').textContent='';
 $('v11Holiday').addEventListener('change',()=>{$('todayPanel').querySelector('p').textContent=''});
@@ -603,9 +603,9 @@ $('v16LookSave').onclick=async()=>{const id=$('v16LookFavorite').value,f=v7Favor
 try{await v16LooksPut({id,photo:v16LookFileData});if(trimId){const data=v7Read(),fav=data.favorites.find(x=>String(x.id)===id);fav.ids=fav.ids.filter(x=>String(x)!==trimId);v7Write(data)}v16LookFileData='';$('v16LookFile').value='';$('v16LookPreview').hidden=true;await v16RefreshLookCache();v16RenderLooks();alert('Je complete outfitfoto is bewaard! 💕')}catch(err){alert('Foto opslaan mislukt. Maak eerst een back-up. '+err.message)}};
 $('v16LookGallery').onclick=async e=>{const del=e.target.closest('[data-v16remove]'),rep=e.target.closest('[data-v16replace]');if(rep){$('v16LookFavorite').value=rep.dataset.v16replace;v16LookCheckTrim();$('v16LookFile').click();return}if(!del||!confirm('Alleen deze outfitfoto verwijderen? De favoriet blijft bewaard.'))return;await v16LooksDelete(del.dataset.v16remove);await v16RefreshLookCache();v16RenderLooks()};
 // Back-up bevat ook de volledige foto's van Mijn looks.
-$('export').onclick=async()=>{try{const stored={};for(let i=0;i<localStorage.length;i++){const key=localStorage.key(i);if(key&&key.startsWith('mijn-kledingkast-test-'))stored[key]=localStorage.getItem(key)}const looks=await v16LooksAll();const data={format:'mijn-kledingkast',version:16,exported:new Date().toISOString(),items,extras:v7Read(),agenda:v6AgendaRead(),travelIds:[...suitcase()],stored,looks,travelSettings:Object.fromEntries(['travelPlace','travelDays','travelClimate','travelWash','travelType','travelMax'].map(id=>[id,$(id).value]))};v6Download('Mijn_Kledingkast_Backup.json',JSON.stringify(data),'application/json')}catch(err){alert('Back-up maken mislukt: '+err.message)}};
+$('export').onclick=async()=>{try{const stored={};for(let i=0;i<localStorage.length;i++){const key=localStorage.key(i);if(key&&key.startsWith('mijn-kledingkast-live-'))stored[key]=localStorage.getItem(key)}const looks=await v16LooksAll();const data={format:'mijn-kledingkast',version:16,exported:new Date().toISOString(),items,extras:v7Read(),agenda:v6AgendaRead(),travelIds:[...suitcase()],stored,looks,travelSettings:Object.fromEntries(['travelPlace','travelDays','travelClimate','travelWash','travelType','travelMax'].map(id=>[id,$(id).value]))};v6Download('Mijn_Kledingkast_Backup.json',JSON.stringify(data),'application/json')}catch(err){alert('Back-up maken mislukt: '+err.message)}};
 const v16OldImport=$('importFile').onchange;
-$('importFile').onchange=async e=>{const file=e.target.files?.[0];if(!file)return;let obj;try{obj=JSON.parse(await file.text())}catch{alert('Dit is geen geldig JSON-bestand.');e.target.value='';return}if(obj.version!==16||!Array.isArray(obj.looks)){return v16OldImport(e)}if(obj.format!=='mijn-kledingkast'||!Array.isArray(obj.items)){alert('Ongeldige back-up.');return}if(!confirm('Volledige back-up herstellen? Bestaande kledingstukken worden bijgewerkt.'))return;try{for(const x of obj.items)if(x&&typeof x.id==='string'&&typeof x.name==='string')await put(v9Normalize(x));for(const [key,value] of Object.entries(obj.stored||{}))if(key.startsWith('mijn-kledingkast-test-')&&typeof value==='string')localStorage.setItem(key,value);for(const x of obj.looks)if(x&&typeof x.id==='string'&&typeof x.photo==='string'&&x.photo.startsWith('data:image/'))await v16LooksPut(x);items=await getAll();v7TravelChosen=[...suitcase()].map(id=>items.find(x=>String(x.id)===id)).filter(Boolean);render();v8RenderPicker();await v16RefreshLookCache();v12Travel();v6ShowAgenda();v7RenderUnworn();generate();alert('Back-up hersteld, inclusief Mijn looks.')}catch(err){alert('Herstellen mislukt: '+err.message)}finally{e.target.value=''}};
+$('importFile').onchange=async e=>{const file=e.target.files?.[0];if(!file)return;let obj;try{obj=JSON.parse(await file.text())}catch{alert('Dit is geen geldig JSON-bestand.');e.target.value='';return}if(obj.version!==16||!Array.isArray(obj.looks)){return v16OldImport(e)}if(obj.format!=='mijn-kledingkast'||!Array.isArray(obj.items)){alert('Ongeldige back-up.');return}if(!confirm('Volledige back-up herstellen? Bestaande kledingstukken worden bijgewerkt.'))return;try{for(const x of obj.items)if(x&&typeof x.id==='string'&&typeof x.name==='string')await put(v9Normalize(x));for(const [key,value] of Object.entries(obj.stored||{}))if(key.startsWith('mijn-kledingkast-live-')&&typeof value==='string')localStorage.setItem(key,value);for(const x of obj.looks)if(x&&typeof x.id==='string'&&typeof x.photo==='string'&&x.photo.startsWith('data:image/'))await v16LooksPut(x);items=await getAll();v7TravelChosen=[...suitcase()].map(id=>items.find(x=>String(x.id)===id)).filter(Boolean);render();v8RenderPicker();await v16RefreshLookCache();v12Travel();v6ShowAgenda();v7RenderUnworn();generate();alert('Back-up hersteld, inclusief Mijn looks.')}catch(err){alert('Herstellen mislukt: '+err.message)}finally{e.target.value=''}};
 
 // Weggooilijst: precies 365 dagen, vanaf toevoeging of laatste draagdatum.
 const v16OldMarkWorn=v7MarkWorn;
@@ -638,22 +638,22 @@ const byId=id=>document.getElementById(id);
 const note=(message,error=false)=>{const e=byId('storageStatus');if(e){e.textContent=message;e.style.color=error?'#a53c36':'#645951'}};
 const day=()=>new Date().toLocaleDateString('sv-SE');
 const plusDays=(s,n)=>{let d=new Date((s||day()).slice(0,10)+'T12:00:00');d.setDate(d.getDate()+n);return d.toLocaleDateString('sv-SE')};
-const v7Key='mijn-kledingkast-test-v7-extras';
-const washKey='mijn-kledingkast-test-v13-wash';
+const v7Key='mijn-kledingkast-live-v7-extras';
+const washKey='mijn-kledingkast-live-v13-wash';
 function looksTx(mode='readonly'){return db.transaction('looks',mode).objectStore('looks')}
 function lookRecords(){return new Promise((res,rej)=>{let q=looksTx().getAll();q.onsuccess=()=>res(q.result);q.onerror=()=>rej(q.error)})}
 function applyWardrobe(){
  render();v8RenderPicker();v7RenderFavorites();v7RenderUnworn();v6ShowAgenda();
- try{v7TravelChosen=[...new Set(JSON.parse(localStorage.getItem('mijn-kledingkast-test-v8-travel')||'[]'))].map(id=>items.find(x=>String(x.id)===String(id))).filter(Boolean);v7RenderTravel()}catch(e){console.warn(e)}
+ try{v7TravelChosen=[...new Set(JSON.parse(localStorage.getItem('mijn-kledingkast-live-v8-travel')||'[]'))].map(id=>items.find(x=>String(x.id)===String(id))).filter(Boolean);v7RenderTravel()}catch(e){console.warn(e)}
  showTab('wardrobe');
 }
 // Whole backup with clothes, photos, favorites, worn history, travel and outfit photos.
 byId('export').onclick=async()=>{
  try{
   await ensureDBReady();items=await getAll();
-  const stored={};for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k&&k.startsWith('mijn-kledingkast-test-'))stored[k]=localStorage.getItem(k)}
+  const stored={};for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k&&k.startsWith('mijn-kledingkast-live-'))stored[k]=localStorage.getItem(k)}
   const looks=await lookRecords();
-  const obj={format:'mijn-kledingkast',version:16,exported:new Date().toISOString(),items,stored,looks,extras:v7Read(),agenda:v6AgendaRead(),travelIds:JSON.parse(localStorage.getItem('mijn-kledingkast-test-v8-travel')||'[]'),travelSettings:Object.fromEntries(['travelPlace','travelDays','travelClimate','travelWash','travelType','travelMax'].map(k=>[k,byId(k)?.value||'']))};
+  const obj={format:'mijn-kledingkast',version:16,exported:new Date().toISOString(),items,stored,looks,extras:v7Read(),agenda:v6AgendaRead(),travelIds:JSON.parse(localStorage.getItem('mijn-kledingkast-live-v8-travel')||'[]'),travelSettings:Object.fromEntries(['travelPlace','travelDays','travelClimate','travelWash','travelType','travelMax'].map(k=>[k,byId(k)?.value||'']))};
   v6Download('Mijn_Kledingkast_Backup.json',JSON.stringify(obj),'application/json');note('Back-up gemaakt: '+items.length+' kledingstukken.');
  }catch(e){alert('Back-up mislukt: '+e.message);note('Back-up mislukt',true)}
 };
@@ -678,10 +678,10 @@ byId('importFile').onchange=async e=>{
    try{await transactionWriteMany('looks',obj.looks.filter(x=>x&&typeof x.id==='string'&&typeof x.photo==='string'&&x.photo.startsWith('data:image/')))}catch(err){warnings.push('Outfitfoto’s: '+err.message)}
   }
   try{
-   if(obj.stored&&typeof obj.stored==='object')for(const [key,val] of Object.entries(obj.stored))if(typeof val==='string'){const suffix=key.startsWith('mijn-kledingkast-live-')?key.slice('mijn-kledingkast-live-'.length):key.startsWith('mijn-kledingkast-test-')?key.slice('mijn-kledingkast-test-'.length):key.startsWith('mijn-kledingkast-')?key.slice('mijn-kledingkast-'.length):null;if(suffix)localStorage.setItem('mijn-kledingkast-test-'+suffix,val)};
+   if(obj.stored&&typeof obj.stored==='object')for(const [key,val] of Object.entries(obj.stored))if(typeof val==='string'){const suffix=key.startsWith('mijn-kledingkast-live-')?key.slice('mijn-kledingkast-live-'.length):key.startsWith('mijn-kledingkast-test-')?key.slice('mijn-kledingkast-test-'.length):key.startsWith('mijn-kledingkast-')?key.slice('mijn-kledingkast-'.length):null;if(suffix)localStorage.setItem('mijn-kledingkast-live-'+suffix,val)};
    if(!obj.stored&&obj.extras&&typeof obj.extras==='object')v7Write({...v7Read(),...obj.extras});
    if(!obj.stored&&Array.isArray(obj.agenda))v6AgendaWrite(obj.agenda);
-   if(!obj.stored&&Array.isArray(obj.travelIds))localStorage.setItem('mijn-kledingkast-test-v8-travel',JSON.stringify(obj.travelIds));
+   if(!obj.stored&&Array.isArray(obj.travelIds))localStorage.setItem('mijn-kledingkast-live-v8-travel',JSON.stringify(obj.travelIds));
    if(obj.travelSettings)for(const [id,val] of Object.entries(obj.travelSettings))if(byId(id))byId(id).value=val;
   }catch(err){warnings.push('Aanvullende gegevens: '+err.message)}
   applyWardrobe();
@@ -694,7 +694,7 @@ byId('importFile').onchange=async e=>{
 // One centrally placed wash control, in both normal and holiday mode.
 byId('globalWash').onclick=()=>{
  if(!confirm('Was gedaan? Alle kleding is daarna weer beschikbaar voor outfitvoorstellen.'))return;
- try{localStorage.setItem(washKey,'{}');localStorage.setItem('mijn-kledingkast-test-v16-last-wash',day());localStorage.setItem('mijn-kledingkast-test-v13-holiday-wash',day());note('Was gedaan: alle kleding weer beschikbaar.');
+ try{localStorage.setItem(washKey,'{}');localStorage.setItem('mijn-kledingkast-live-v16-last-wash',day());localStorage.setItem('mijn-kledingkast-live-v13-holiday-wash',day());note('Was gedaan: alle kleding weer beschikbaar.');
   byId('todayGenerate')?.click();
  }catch(err){alert('Wasregistratie mislukt: '+err.message)}
 };
@@ -835,12 +835,12 @@ byId('v17PhotoInput').onchange=async e=>{
   const chosen=[...new Set(favEditIds)].filter(pieceId=>items.some(x=>String(x.id)===pieceId));
   const duplicate=chosen.length>0&&state.favorites.some(f=>String(f.id)!==id&&(f.ids||[]).map(String).sort().join('|')===chosen.slice().sort().join('|'));
   if(duplicate)throw Error('Deze kledingcombinatie staat al bij je favorieten. Kies een andere combinatie.');
-  oldState=localStorage.getItem('mijn-kledingkast-test-v7-extras');
+  oldState=localStorage.getItem('mijn-kledingkast-live-v7-extras');
   const existing=state.favorites.find(f=>String(f.id)===id);
   const value={...(existing||{}),id,ids:chosen,date:existing?.date||day(),name:existing?.name||''};
   if(existing)state.favorites=state.favorites.map(f=>String(f.id)===id?value:f);
   else {state.favorites.push(value);createdId=id}
-  localStorage.setItem('mijn-kledingkast-test-v7-extras',JSON.stringify(state));
+  localStorage.setItem('mijn-kledingkast-live-v7-extras',JSON.stringify(state));
   if(!(v7Favorites().some(f=>String(f.id)===id)))throw Error('De favoriet kon niet worden bewaard.');
   try{
    await transactionWriteMany('looks',[{id,photo}]);
@@ -848,8 +848,8 @@ byId('v17PhotoInput').onchange=async e=>{
    if(!saved||saved.photo!==photo)throw Error('De foto is niet teruggevonden in de opslag.');
   }catch(err){
    // Do not leave a photo-only favorite behind when its photo could not be saved.
-   if(oldState===null)localStorage.removeItem('mijn-kledingkast-test-v7-extras');
-   else localStorage.setItem('mijn-kledingkast-test-v7-extras',oldState);
+   if(oldState===null)localStorage.removeItem('mijn-kledingkast-live-v7-extras');
+   else localStorage.setItem('mijn-kledingkast-live-v7-extras',oldState);
    throw err;
   }
   favEditId=id;favEditIds=chosen;favPhotoBefore=photo;favPhotoPending=null;favPhotoDelete=false;
@@ -869,7 +869,7 @@ byId('v17RemovePhoto').onclick=async()=>{
   const savedFavorite=v7Favorites().find(f=>String(f.id)===id);
   if(savedFavorite&&!(savedFavorite.ids||[]).length&&!favEditIds.length){
    const state=v7Read();state.favorites=(state.favorites||[]).filter(f=>String(f.id)!==id);
-   localStorage.setItem('mijn-kledingkast-test-v7-extras',JSON.stringify(state));
+   localStorage.setItem('mijn-kledingkast-live-v7-extras',JSON.stringify(state));
    favEditId=null;
   }
   if(window.__mkRefreshLookCache)await window.__mkRefreshLookCache();renderFavoriteEditor();v17PhotoMessage('Foto verwijderd.');
@@ -893,8 +893,8 @@ byId('v17SaveFavorite').onclick=async()=>{
  if(previous)state.favorites=state.favorites.map(f=>String(f.id)===id?newer:f);
  else state.favorites.push(newer);
  try{
-  const json=JSON.stringify(state);localStorage.setItem('mijn-kledingkast-test-v7-extras',json);
-  if(JSON.parse(localStorage.getItem('mijn-kledingkast-test-v7-extras')||'{}').favorites?.find(f=>String(f.id)===id)?.ids?.length!==ids.length)throw Error('Favoriet is niet opgeslagen.');
+  const json=JSON.stringify(state);localStorage.setItem('mijn-kledingkast-live-v7-extras',json);
+  if(JSON.parse(localStorage.getItem('mijn-kledingkast-live-v7-extras')||'{}').favorites?.find(f=>String(f.id)===id)?.ids?.length!==ids.length)throw Error('Favoriet is niet opgeslagen.');
   if(favPhotoDelete&&favPhotoBefore){await new Promise((res,rej)=>{const q=db.transaction('looks','readwrite').objectStore('looks').delete(id);q.onsuccess=res;q.onerror=()=>rej(q.error)})}
   if(favPhotoPending){await transactionWriteMany('looks',[{id,photo:favPhotoPending}])}
   if(window.__mkRefreshLookCache)await window.__mkRefreshLookCache();
@@ -928,7 +928,7 @@ function reminder(){
  const now=day(),year=+now.slice(0,4),month=+now.slice(5,7);
  const banner=byId('reminderBanner');if(year<2027||(year===2027&&month<5)){banner.hidden=true;return}
  const cycle=month>=11?year+'-11':month>=5?year+'-05':(year-1)+'-11';
- const key='mijn-kledingkast-test-v16-reminder-'+cycle;
+ const key='mijn-kledingkast-live-v16-reminder-'+cycle;
  banner.hidden=!!localStorage.getItem(key);if(!banner.hidden){banner.textContent='Tijd om los te laten! Tik om je weggooilijst te bekijken.';banner.onclick=()=>{localStorage.setItem(key,'acknowledged');banner.hidden=true;showTab('unworn')}}
 }
 reminder();

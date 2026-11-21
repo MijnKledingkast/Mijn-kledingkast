@@ -1,5 +1,5 @@
-Mijn Kledingkast - testeditie outfitfoto's
+Mijn Kledingkast - definitieve uitgave outfitfoto's
 
-In deze uitgave blijft de kledingopslag gescheiden van de vaste kledingkast. Voeg een complete outfitfoto toe via Mijn schatkamer > Outfitfoto's. Zodra je een foto kiest, slaat de app deze direct op. Extra kleding kan later worden toegevoegd.
+Foto's die bij Mijn schatkamer > Outfitfoto's worden gekozen, worden direct opgeslagen. Ook een foto zonder kledingstukken is toegestaan. Kleding en accessoires kunnen later worden toegevoegd.
 
-Upload alleen deze bestanden naar je bestaande GitHub-project Mijn-kledingkast-test. Gebruik NOOIT deze testuitgave in je vaste project. Je persoonlijke back-up hoort niet op GitHub.
+Deze uitgave is voor het vaste GitHub-project Mijn-kledingkast, niet voor de testwebsite. Maak vooraf een actuele back-up van de vaste kledingkast. Je persoonlijke back-up hoort niet op GitHub.
