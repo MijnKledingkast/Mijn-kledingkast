@@ -1,14 +1,5 @@
-Mijn Kledingkast - versie 16W (vaste website)
+Mijn Kledingkast - testeditie outfitfoto's
 
-Voor: GitHub-repository Mijn-kledingkast (niet de test-repository).
+In deze uitgave blijft de kledingopslag gescheiden van de vaste kledingkast. Voeg een complete outfitfoto toe via Mijn schatkamer > Outfitfoto's. Zodra je een foto kiest, slaat de app deze direct op. Extra kleding kan later worden toegevoegd.
 
-Upload de negen losse bestanden uit deze map in de hoofdmap van de repository.
-Voeg geen kledingback-up toe aan GitHub.
-
-Deze versie gebruikt een EIGEN opslagruimte: mijn-kledingkast-live-v1.
-Daardoor blijven de gegevens van herstelversie 14R bewaard als terugvaloptie.
-De nieuwe versie begint leeg. Herstel je nieuwste JSON-back-up via Mijn schatkamer > Herstellen.
-Controleer kleding, foto's, favorieten en agenda; maak daarna opnieuw een back-up.
-
-Let op: Safari op iPhone, de app op het beginscherm, en Safari op Mac kunnen
-ieder een afzonderlijke opslag hebben. Herstel in elke opslag zo nodig dezelfde back-up.
+Upload alleen deze bestanden naar je bestaande GitHub-project Mijn-kledingkast-test. Gebruik NOOIT deze testuitgave in je vaste project. Je persoonlijke back-up hoort niet op GitHub.
