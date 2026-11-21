@@ -1,0 +1,15 @@
+Mijn Kledingkast - herstelversie 14R
+
+Dit ZIP-bestand bevat uitsluitend de websitecode en pictogrammen.
+De persoonlijke back-up met 290 kledingstukken en fotos zit er niet in en moet niet naar GitHub worden geupload.
+
+Gebruiksaanwijzing (na activeren van GitHub Pages):
+1. Open de nieuwe GitHub Pages-website in Safari.
+2. Tik op Kledingkast en controleer of de melding begint met 'Opslag gereed'.
+3. Tik op Herstellen en selecteer je persoonlijke JSON-back-up van 21 november 2026.
+4. Controleer of 290 kledingstukken en de fotos zichtbaar zijn en maak een nieuwe back-up.
+5. Wis de back-up nooit.
+
+Let op: deze versie is een eerste herstelreparatie op basis van versie 14.
+De app is gecontroleerd op JavaScript-syntax, maar nog niet op een echte iPhone/Safari getest.
+De nieuwe functies uit versie 16 zijn hierin nog niet opgenomen.
