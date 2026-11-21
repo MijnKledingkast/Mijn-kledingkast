@@ -148,6 +148,19 @@ header{background:#ddc9b8;border-bottom-color:#b99e86}
 #travelResults .v17-flight h3{margin:0 0 9px}
 #travelResults .v17-flight .v13-photo-grid{margin-bottom:8px}
 #travelResults .v17-flight p{font-size:12px;color:#68584e;margin:5px 0 7px}
+.v18-gallery-title{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin:12px 0}
+.v18-gallery-title h2{margin:0}
+.v18-photo-gallery{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:8px 0 18px}
+.v18-photo-tile{position:relative;background:#fff;border:1px solid #d6c5b7;border-radius:10px;min-width:0;padding:5px;overflow:hidden}
+.v18-photo-tile img{width:100%;aspect-ratio:3/4;object-fit:contain;display:block;background:white;border-radius:7px}
+.v18-photo-actions{display:flex;gap:4px;margin-top:5px;justify-content:center;flex-wrap:wrap}
+.v18-photo-actions button{font-size:11px;padding:5px 7px}
+.v18-pick-photo{display:block;width:100%;padding:0;border:0;background:transparent;cursor:pointer}
+.v18-photo-tile.v18-selected{outline:3px solid #99704c;outline-offset:-2px}
+#v18PhotoChoices .v18-photo-tile{cursor:pointer}
+#v18PhotoChoices .v18-photo-tile img{pointer-events:none}
+#v18GalleryStatus:empty{display:none}
+@media(max-width:430px){.v18-photo-gallery{gap:4px}.v18-photo-actions button{padding:4px;font-size:10px}}
 </style></head><body><main class="wrap"><div id="reminderBanner" hidden role="status"></div><div class="global-actions"><button id="globalWash" class="btn" type="button">✓ Was gedaan</button><span id="storageStatus" role="status" aria-live="polite"></span></div><div class="tabs"><button class="btn active" id="tabWardrobe" type="button">Mijn schatkamer</button><button class="btn" id="tabPlanner" type="button" hidden>✦ Outfitplanner</button><button class="btn" id="tabToday" type="button">Dress to impress!</button><button class="btn" id="tabTravel" type="button">Vakantiekoffer</button><button class="btn" id="tabFavorites" type="button">♡ Favorieten</button><button class="btn" id="tabUnworn" type="button">Mijn weggooilijst</button><button class="btn" id="tabAgenda" type="button">Outfitagenda</button></div><section id="plannerPanel" class="panel-hidden"><div class="planner"><h2>Wat trek ik aan?</h2><p>Combineer je eigen kleding. Kies een gelegenheid, seizoen en weertype. Je kunt steeds een nieuw voorstel maken.</p><div class="planner-controls"><label>Gelegenheid<select id="planOcc"><option value="">Maakt niet uit</option><option>Kantoor formeel</option><option>Kantoor informeel</option><option>Thuis</option><option>Uitjes</option><option>Party</option><option>Vrije tijd</option></select></label><label>Weertype<select id="planWeather"><option value="luchtig">Mussen vallen van het dak</option><option value="koel">Lekker zomers</option><option value="aangenaam" selected>Jas aan, jas uit</option><option value="warm">Brrr, frisjes!</option><option value="extra">IJspegels aan je neus</option></select></label><label>Seizoen<select id="planSeason"><option value="">Elk seizoen</option><option>Lente/Zomer</option><option>Herfst/Winter</option></select></label><label>Stijl<select id="planStyle"><option value="balanced">Verzorgd & veelzijdig</option><option value="dressy">Extra chic</option><option value="relaxed">Ontspannen</option></select></label></div><button class="btn primary wide" id="makeLook" type="button">✦ Stel mijn outfit samen</button><div id="lookResult" aria-live="polite"><p>Maak je eerste combinatie met de kleding die al in je kast staat.</p></div></div></section>
 <section id="todayPanel" class="panel-hidden v6-panel"><h2>Dress to impress!</h2><p></p><div id="todayResults" class="v11-outfits" aria-live="polite"></div><div class="v6-controls" hidden><label>Gelegenheid<select id="todayOcc"><option value="">Maakt niet uit</option><option value="Kantoor formeel">Chic de la chic</option><option value="Kantoor informeel">Werk aan de winkel</option><option value="Thuis">Lekker thuis</option><option value="Vrije tijd">De hort op</option><option value="Uitjes">Een avondje uit</option><option value="Party">Tijd om te schitteren</option></select></label><label>Seizoen<select id="todaySeason"><option>Lente/Zomer</option><option>Herfst/Winter</option></select></label><label>Temperatuur<select id="todayTemp"><option value="normal">Normaal voor het seizoen</option><option value="warmer">Warmer weer – luchtiger</option><option value="kouder">Kouder weer – warmer aankleden</option></select></label></div><input id="todayWeather" type="hidden" value="aangenaam"><select id="todayStyle" hidden><option value="balanced">Verzorgd</option></select><button id="surpriseGenerate" hidden>Verras me</button><button class="btn primary wide" id="todayGenerate" type="button">↻ Alternatieven</button><label class="v11-holiday"><input type="checkbox" id="v11Holiday"> Ik ben op vakantie – gebruik alleen mijn vakantiekoffer</label></section>
 <section id="travelPanel" class="panel-hidden v6-panel"><h2>Klaar voor vertrek! ✈️</h2><div class="v6-controls" hidden><label>Bestemming<input id="travelPlace" placeholder="Bijvoorbeeld Argentinië"></label><label>Aantal dagen<input id="travelDays" type="number" min="1" max="60" value="7"></label><label>Klimaat<select id="travelClimate"><option value="warm">Brrr, frisjes!</option><option value="mild" selected>Gemengd / zacht</option><option value="cold">Koud</option></select></label><label>Wassen tijdens vakantie<select id="travelWash"><option value="no">Niet wassen</option><option value="yes">Wel wassen</option></select></label><label>Reissoort<select id="travelType"><option value="leisure">Vakantie</option><option value="business">Zakelijk</option><option value="mixed">Afwisselend</option></select></label></div><label>Maximum kledinggewicht (kg)<input id="travelMax" type="number" min="0.5" step="0.5" value="15"></label><button class="btn primary" id="travelGenerate">Bekijk mijn koffer</button><input type="checkbox" id="v11HolidayTravel" hidden aria-hidden="true"><div id="travelResults" class="v6-results"></div></section>
@@ -155,13 +168,24 @@ header{background:#ddc9b8;border-bottom-color:#b99e86}
 <section id="wardrobePanel"><section id="v17OutfitEditor" hidden aria-label="Outfitfoto's en favorieten bewerken">
 <div class="v17-toolbar"><h2>Mijn schatkamer · Outfitfoto's</h2><button class="btn" id="v17BackFavorites" type="button">Terug naar favorieten</button></div>
 <div id="v17EditHeading" class="v17-summary"></div>
-<div class="v17-photo-row"><img id="v17PhotoPreview" alt="Complete outfitfoto" hidden><label>Complete outfitfoto (optioneel)<input type="file" id="v17PhotoInput" accept="image/*"></label><button type="button" class="btn" id="v17RemovePhoto" hidden>Foto verwijderen</button></div><p id="v17PhotoStatus" class="v17-summary" role="status" aria-live="polite">Een gekozen foto wordt direct opgeslagen.</p>
+<h3>Outfitfoto's</h3>
+<div class="v17-photo-row"><img id="v17PhotoPreview" alt="Gekozen outfitfoto" hidden><button type="button" class="btn" id="v17RemovePhoto" hidden>Geen outfitfoto</button>
+<input type="file" id="v17PhotoInput" accept="image/*" hidden></div>
+<p id="v17PhotoStatus" class="v17-summary" role="status" aria-live="polite">Kies een outfitfoto uit Mijn schatkamer.</p>
+<div id="v18PhotoChoices" class="v18-photo-gallery"></div>
 <h3>Gekozen kleding en accessoires</h3><div id="v17Chosen" class="v17-piecegrid"></div>
 <div id="v17Count" class="v17-summary"></div>
 <h3>Kleding toevoegen</h3><label>Zoek kleding of accessoires<input id="v17Search" type="search" placeholder="Zoek in je schatkamer"></label>
 <div id="v17CategoryPicker"></div>
 <div class="v17-actions"><button id="v17CancelFavorite" type="button" class="btn">Annuleren</button><button id="v17SaveFavorite" type="button" class="btn primary">Bewaar favoriet</button></div>
-</section><div class="toolbar"><button class="btn" id="wardrobeLooksOpen" type="button">Outfitfoto’s</button><button class="btn primary grow" id="add">＋ Kleding toevoegen</button><button class="btn" id="export">↓ Back-up</button><button class="btn" id="import">↑ Herstellen</button><input type="file" id="importFile" accept="application/json,.json" hidden></div><div class="filters"><select id="fitFilter"><option value="all">Alle pasvormen</option><option value="Slank">Slank + Past altijd</option><option value="Comfort">Comfort + Past altijd</option></select><input id="search" placeholder="Zoek in je kledingkast…"><select id="categoryFilter"><option value="">Alle categorieën</option></select><select id="seasonFilter"><option value="">Alle seizoenen</option><option>Lente/Zomer</option><option>Herfst/Winter</option><option>Hele jaar</option></select><select id="occasionFilter"><option value="">Alle gelegenheden</option><option>Kantoor formeel</option><option>Kantoor informeel</option><option>Thuis</option><option>Uitjes</option><option value="Party">Feestelijk</option><option>Vrije tijd</option></select></div><div class="colorfilter"><input id="colorFilter" placeholder="Filter op kleur, bijvoorbeeld roze of blauw"></div><div class="view-switch" role="group" aria-label="Weergave" hidden><button type="button" class="btn active-view" id="viewGrouped">Per categorie</button><button type="button" class="btn" id="viewAll">Alle kleding</button></div><div class="count" id="count"></div><section id="grid"></section></section></main><div class="overlay" id="overlay"><div class="modal" role="dialog" aria-modal="true" aria-label="Kledingstuk"><h2 id="modalTitle">Kledingstuk toevoegen</h2><form id="form"><div class="field"><label>Foto</label><input id="photo" type="file" accept="image/*"><img class="preview" id="preview" alt="Voorbeeld kledingstuk"></div><div class="field"><label>Naam *</label><input id="name" required placeholder="Bijvoorbeeld: beige blazer"></div><div class="field"><label>Categorie</label><select id="category"></select></div><div class="field"><label>Kleur</label><input id="color" placeholder="Bijvoorbeeld: zand, donkerblauw"></div><div class="field"><label>Seizoen</label><select id="season"><option>Hele jaar</option><option>Lente/Zomer</option><option>Herfst/Winter</option></select></div><div class="field"><label>Voor welk weertype?</label><select id="warmth"><option value="Luchtig">Mussen vallen van het dak</option><option value="Koel">Lekker zomers</option><option value="Aangenaam">Jas aan, jas uit</option><option value="Warm">Brrr, frisjes!</option><option value="Extra warm">IJspegels aan je neus</option></select></div><div class="field"><label>Gelegenheden (meerdere mogelijk)</label><div id="occasions" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:13px"></div></div><div class="field"><label>Pasvorm</label><select id="fit"><option>Comfort</option><option>Slank</option><option>Past altijd</option></select></div><div class="field"><label>Gewicht (gram, optioneel)</label><input id="weightGrams" type="number" min="0" step="1" placeholder="Bijvoorbeeld: 350"></div><div class="field"><label>Notities</label><textarea id="notes" rows="2" placeholder="Pasvorm, materiaal, combinaties…"></textarea></div><div class="modalbar"><button class="btn grow" type="button" id="cancel">Annuleren</button><button class="btn primary grow" type="submit">Bewaren</button></div></form><p class="hint">Foto's worden op dit apparaat opgeslagen. Gebruik ‘Back-up’ om een kopie te bewaren.</p></div></div><script>
+</section><div class="toolbar"><button class="btn" id="wardrobeLooksOpen" type="button">Outfitfoto’s</button><button class="btn primary grow" id="add">＋ Kleding toevoegen</button><button class="btn" id="export">↓ Back-up</button><button class="btn" id="import">↑ Herstellen</button><input type="file" id="importFile" accept="application/json,.json" hidden></div><div class="filters"><select id="fitFilter"><option value="all">Alle pasvormen</option><option value="Slank">Slank + Past altijd</option><option value="Comfort">Comfort + Past altijd</option></select><input id="search" placeholder="Zoek in je kledingkast…"><select id="categoryFilter"><option value="">Alle categorieën</option></select><select id="seasonFilter"><option value="">Alle seizoenen</option><option>Lente/Zomer</option><option>Herfst/Winter</option><option>Hele jaar</option></select><select id="occasionFilter"><option value="">Alle gelegenheden</option><option>Kantoor formeel</option><option>Kantoor informeel</option><option>Thuis</option><option>Uitjes</option><option value="Party">Feestelijk</option><option>Vrije tijd</option></select></div><div class="colorfilter"><input id="colorFilter" placeholder="Filter op kleur, bijvoorbeeld roze of blauw"></div><div class="view-switch" role="group" aria-label="Weergave" hidden><button type="button" class="btn active-view" id="viewGrouped">Per categorie</button><button type="button" class="btn" id="viewAll">Alle kleding</button></div><div class="count" id="count"></div>
+<section id="v18OutfitCategory" class="category-section" aria-label="Outfitfoto's">
+ <div class="v18-gallery-title"><h2 class="category-heading">Outfitfoto's <small id="v18PhotoCount">0</small></h2>
+ <button type="button" class="btn primary" id="v18AddPhoto">＋ Outfitfoto toevoegen</button></div>
+ <input type="file" accept="image/*" id="v18GalleryInput" hidden>
+ <p id="v18GalleryStatus" class="v17-summary" role="status" aria-live="polite"></p>
+ <div id="v18PhotoGallery" class="grid v18-photo-gallery"></div>
+</section><section id="grid"></section></section></main><div class="overlay" id="overlay"><div class="modal" role="dialog" aria-modal="true" aria-label="Kledingstuk"><h2 id="modalTitle">Kledingstuk toevoegen</h2><form id="form"><div class="field"><label>Foto</label><input id="photo" type="file" accept="image/*"><img class="preview" id="preview" alt="Voorbeeld kledingstuk"></div><div class="field"><label>Naam *</label><input id="name" required placeholder="Bijvoorbeeld: beige blazer"></div><div class="field"><label>Categorie</label><select id="category"></select></div><div class="field"><label>Kleur</label><input id="color" placeholder="Bijvoorbeeld: zand, donkerblauw"></div><div class="field"><label>Seizoen</label><select id="season"><option>Hele jaar</option><option>Lente/Zomer</option><option>Herfst/Winter</option></select></div><div class="field"><label>Voor welk weertype?</label><select id="warmth"><option value="Luchtig">Mussen vallen van het dak</option><option value="Koel">Lekker zomers</option><option value="Aangenaam">Jas aan, jas uit</option><option value="Warm">Brrr, frisjes!</option><option value="Extra warm">IJspegels aan je neus</option></select></div><div class="field"><label>Gelegenheden (meerdere mogelijk)</label><div id="occasions" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:13px"></div></div><div class="field"><label>Pasvorm</label><select id="fit"><option>Comfort</option><option>Slank</option><option>Past altijd</option></select></div><div class="field"><label>Gewicht (gram, optioneel)</label><input id="weightGrams" type="number" min="0" step="1" placeholder="Bijvoorbeeld: 350"></div><div class="field"><label>Notities</label><textarea id="notes" rows="2" placeholder="Pasvorm, materiaal, combinaties…"></textarea></div><div class="modalbar"><button class="btn grow" type="button" id="cancel">Annuleren</button><button class="btn primary grow" type="submit">Bewaren</button></div></form><p class="hint">Foto's worden op dit apparaat opgeslagen. Gebruik ‘Back-up’ om een kopie te bewaren.</p></div></div><script>
 const categories=['Blouses & tops','Truien & vesten','Blazers & jasjes','Broeken','Rokken','Jurken','Jassen','Schoenen','Tassen','Sieraden & accessoires'];const occasions=['Kantoor formeel','Kantoor informeel','Thuis','Uitjes','Party','Vrije tijd'];const $=id=>document.getElementById(id);let items=[],editId=null,photoData='';let db;
 let refresh=async()=>{items=await getAll();render()};
 let dbOpening=null;
@@ -484,7 +508,7 @@ $('importFile').onchange=async e=>{const f=e.target.files[0];if(!f)return;let ob
 v7RenderUnworn=function(){const d=v7Read(),today=v6Date(),yearAgo=v7AddMonths(today,-12),tracking=d.trackingStart||today;const listed=items.filter(x=>{const last=d.lastWorn?.[x.id];if(last)return last<=yearAgo;const first=(typeof x.createdAt==='string'&&/^\d{4}-\d{2}-\d{2}/.test(x.createdAt))?x.createdAt.slice(0,10):tracking;return first<=yearAgo}).sort((a,b)=>String(a.name).localeCompare(String(b.name),'nl'));$('unwornResults').innerHTML='<p class="v6-note">'+listed.length+' kledingstukken</p><div class="v13-photo-grid">'+listed.map(x=>'<button type="button" class="v13-photo '+(fitOf(x)==='Slank'?'v13-slim-card':'')+'" data-v13unworn="'+esc(String(x.id))+'" title="'+esc(x.name)+'">'+photo(x)+'</button>').join('')+'</div>';};
 $('unwornResults').addEventListener('click',e=>{const b=e.target.closest('[data-v13unworn]');if(b){const x=items.find(i=>String(i.id)===b.dataset.v13unworn);if(x&&confirm(x.name+' vandaag als gedragen registreren?'))v7MarkWorn(x.id)}});
 // Onderste navigatie, overige pagina's blijven bereikbaar via Meer.
-const nav=document.createElement('nav');nav.className='v13-bottom-nav';nav.innerHTML=[['today','✦','Outfits'],['wardrobe','▦','Kledingkast'],['travel','▣','Koffer'],['agenda','▤','Agenda'],['favorites','♡','Favorieten'],['looks','📸','Mijn looks']].map(([key,ico,label])=>'<button type="button" data-v13nav="'+key+'"><span>'+ico+'</span>'+label+'</button>').join('');document.body.append(nav);
+const nav=document.createElement('nav');nav.className='v13-bottom-nav';nav.innerHTML=[['today','✦','Outfits'],['wardrobe','▦','Kledingkast'],['travel','▣','Koffer'],['agenda','▤','Agenda'],['favorites','♡','Favorieten'],['more','☰','Meer']].map(([key,ico,label])=>'<button type="button" data-v13nav="'+key+'"><span>'+ico+'</span>'+label+'</button>').join('');document.body.append(nav);
 nav.addEventListener('click',e=>{const b=e.target.closest('[data-v13nav]');if(!b)return;const key=b.dataset.v13nav;if(key==='more'){document.querySelector('.tabs').classList.toggle('v13-open');window.scrollTo({top:0,behavior:'smooth'})}else{showTab(key);document.querySelector('.tabs').classList.remove('v13-open')}});
 const v13ShowTab=showTab;showTab=function(key){v13ShowTab(key);if(key==='travel')v12Travel();if(key==='looks'&&typeof v16RenderLooks==='function')v16RenderLooks();if(key==='today')generate();nav.querySelectorAll('button').forEach(b=>b.classList.toggle('active',b.dataset.v13nav===key))};
 // Koffer en outfitvoorstellen lezen steeds dezelfde bewaarde selectie.
@@ -590,9 +614,10 @@ function v16LooksStore(mode='readonly'){return db.transaction('looks',mode).obje
 function v16LooksAll(){return new Promise((resolve,reject)=>{const q=v16LooksStore().getAll();q.onsuccess=()=>resolve(q.result);q.onerror=()=>reject(q.error)})}
 function v16LooksPut(x){return new Promise((resolve,reject)=>{const q=v16LooksStore('readwrite').put(x);q.onsuccess=()=>resolve();q.onerror=()=>reject(q.error)})}
 function v16LooksDelete(id){return new Promise((resolve,reject)=>{const q=v16LooksStore('readwrite').delete(String(id));q.onsuccess=()=>resolve();q.onerror=()=>reject(q.error)})}
-function v16LookImage(f){const data=v16LookCache.get(String(f.id));return data?'<img class="v16-complete-photo" src="'+data+'" alt="Complete outfit">':''}
-function v16ProposalPhotos(r){const fav=v7Favorites().find(f=>signature((f.ids||[]).map(id=>({id})))===signature(r.look));return '<div class="v11-photos">'+(fav?v16LookImage(fav):'')+r.look.slice(0,fav&&v16LookCache.has(String(fav.id))?7:8).map(photo).join('')+'</div>'}
-function v16FavoriteMarkup(f){const imgs=(f.ids||[]).map(id=>items.find(x=>String(x.id)===String(id))).filter(Boolean);return '<div class="v11-fav"><div class="v11-four">'+v16LookImage(f)+imgs.slice(0,v16LookCache.has(String(f.id))?7:8).map(photo).join('')+'</div><div class="v15-fav-actions">'+(imgs.length?'<button type="button" class="v15-wear-tick" data-v14wear="'+esc(f.id)+'">✓ Gedragen</button>':'')+'<button type="button" class="v16-icon" data-v7favdel="'+esc(f.id)+'" title="Favoriet verwijderen">🗑</button></div></div>'}
+function v16LookKey(f){return Object.prototype.hasOwnProperty.call(f,'lookPhotoId')?(f.lookPhotoId?String(f.lookPhotoId):null):String(f.id)}
+function v16LookImage(f){const key=v16LookKey(f),data=key?v16LookCache.get(key):null;return data?'<img class="v16-complete-photo" src="'+data+'" alt="Complete outfit">':''}
+function v16ProposalPhotos(r){const fav=v7Favorites().find(f=>signature((f.ids||[]).map(id=>({id})))===signature(r.look));return '<div class="v11-photos">'+(fav?v16LookImage(fav):'')+r.look.slice(0,fav&&!!v16LookCache.get(v16LookKey(fav))?7:8).map(photo).join('')+'</div>'}
+function v16FavoriteMarkup(f){const imgs=(f.ids||[]).map(id=>items.find(x=>String(x.id)===String(id))).filter(Boolean);return '<div class="v11-fav"><div class="v11-four">'+v16LookImage(f)+imgs.slice(0,!!v16LookCache.get(v16LookKey(f))?7:8).map(photo).join('')+'</div><div class="v15-fav-actions">'+(imgs.length?'<button type="button" class="v15-wear-tick" data-v14wear="'+esc(f.id)+'">✓ Gedragen</button>':'')+'<button type="button" class="v16-icon" data-v7favdel="'+esc(f.id)+'" title="Favoriet verwijderen">🗑</button></div></div>'}
 v7RenderFavorites=function(){const favs=v7Favorites();$('favoritesResults').innerHTML=favs.length?favs.map(v16FavoriteMarkup).join(''):'<p>Nog geen favorieten opgeslagen.</p>'};
 async function v16RefreshLookCache(){if(!db)return;try{const all=await v16LooksAll();v16LookCache=new Map(all.map(x=>[String(x.id),x.photo]));v7RenderFavorites();if(generated.length) {const cards=$('todayResults').querySelectorAll('[data-v11pick]');cards.forEach((card,i)=>{const photos=card.querySelector('.v11-photos');if(photos&&generated[i])photos.outerHTML=v16ProposalPhotos(generated[i])})}}catch(err){console.error('Foto’s laden mislukt',err)}}
 function v16RenderLooks(){if(!db)return;const favs=v7Favorites(),selector=$('v16LookFavorite'),selected=selector.value;selector.innerHTML='<option value="">Kies een favoriet…</option>'+favs.map((f,i)=>'<option value="'+esc(f.id)+'">Favoriet '+(i+1)+' ('+(f.ids||[]).length+' kledingstukken)</option>').join('');if(favs.some(f=>String(f.id)===selected))selector.value=selected;const gallery=$('v16LookGallery');gallery.innerHTML=favs.filter(f=>v16LookCache.has(String(f.id))).map(f=>'<div class="v16-look-gallery-card"><img src="'+v16LookCache.get(String(f.id))+'" alt="Mijn complete look"><div><button type="button" class="btn" data-v16replace="'+esc(f.id)+'">Foto vervangen</button><button type="button" class="v16-icon" data-v16remove="'+esc(f.id)+'" title="Foto verwijderen">🗑</button></div></div>').join('')||'<p>Je hebt nog geen complete outfitfoto’s toegevoegd.</p>';v16LookCheckTrim()}
@@ -765,9 +790,12 @@ const addFavoriteBtn=document.createElement('button');addFavoriteBtn.type='butto
 addFavoriteBtn.className='btn primary v17-addfavorite';addFavoriteBtn.textContent='＋ Nieuwe favoriet';
 favPanel.insertBefore(addFavoriteBtn,byId('favoritesResults').previousElementSibling);
 let favEditId=null,favEditIds=[],favPhotoBefore=null,favPhotoPending=null,favPhotoDelete=false;let favPhotoSaveBusy=false;
+let favSelectedPhotoId=null; // independent picture from the Outfitfoto's category
+let galleryReplaceId=null;
+let v18LookCache=new Map();
 const favSection=byId('v17OutfitEditor');
 function closeFavoriteEditor(goBack=true){if(favPhotoSaveBusy){alert('Je outfitfoto wordt nog opgeslagen.');return}favSection.hidden=true;byId('wardrobePanel').classList.remove('v17-editing');
- favEditId=null;favEditIds=[];favPhotoBefore=null;favPhotoPending=null;favPhotoDelete=false;
+ favEditId=null;favEditIds=[];favPhotoBefore=null;favPhotoPending=null;favPhotoDelete=false;favSelectedPhotoId=null;
  byId('v17PhotoInput').value='';if(goBack)showTab('favorites')}
 async function openFavoriteEditor(id){
  if(!db){alert('Je kledingkast is nog niet geladen.');return}
@@ -775,13 +803,15 @@ async function openFavoriteEditor(id){
  if(id!=null&&!f){alert('Deze favoriet is niet gevonden.');return}
  favEditId=f?String(f.id):null;favEditIds=(f?.ids||[]).map(String);
  favPhotoPending=null;favPhotoDelete=false;favPhotoBefore=null;
- byId('v17PhotoInput').value='';byId('v17Search').value='';byId('v17PhotoStatus').textContent='Een gekozen foto wordt direct opgeslagen.';byId('v17PhotoStatus').classList.remove('v17-error');
- try{const records=await lookRecords();favPhotoBefore=f?records.find(r=>String(r.id)===favEditId)?.photo||null:null}
- catch(err){alert('De outfitfoto kon niet worden geladen: '+err.message);return}
+ byId('v17PhotoInput').value='';byId('v17Search').value='';byId('v17PhotoStatus').textContent='Kies een outfitfoto uit Mijn schatkamer.';byId('v17PhotoStatus').classList.remove('v17-error');
+ try{await ensureDBReady();await window.__mkRefreshLookCache();}
+ catch(err){alert('De outfitfoto’s konden niet worden geladen: '+err.message);return}
+ const legacyKey=f&&!Object.prototype.hasOwnProperty.call(f,'lookPhotoId')&&v18LookCache.has(String(f.id))?String(f.id):null;
+ favSelectedPhotoId=f?(Object.prototype.hasOwnProperty.call(f,'lookPhotoId')?(f.lookPhotoId||null):legacyKey):null;
  showTab('wardrobe');byId('wardrobePanel').classList.add('v17-editing');favSection.hidden=false;
  renderFavoriteEditor();favSection.scrollIntoView({block:'start',behavior:'instant'});
 }
-function effectiveFavoritePhoto(){return favPhotoDelete?null:(favPhotoPending||favPhotoBefore)}
+function effectiveFavoritePhoto(){return favSelectedPhotoId?v18LookCache.get(String(favSelectedPhotoId))||null:null}
 function showPhotoPreview(){const p=effectiveFavoritePhoto(),preview=byId('v17PhotoPreview');
  preview.hidden=!p;if(p)preview.src=p;else preview.removeAttribute('src');
  byId('v17RemovePhoto').hidden=!p;
@@ -793,6 +823,8 @@ function groupedPicker(clothes){return categoryOrder.map(cat=>({cat,xs:clothes.f
 function renderFavoriteEditor(){
  byId('v17EditHeading').textContent=favEditId?'Favoriet aanpassen':'Nieuwe favoriete combinatie';
  showPhotoPreview();const withPhoto=!!effectiveFavoritePhoto(),limit=withPhoto?7:8;
+ const availablePhotos=[...v18LookCache.entries()].filter(([id,photo])=>photo&&photo.startsWith('data:image/'));
+ byId('v18PhotoChoices').innerHTML=availablePhotos.length?availablePhotos.map(([id,photo])=>'<button type="button" class="v18-photo-tile v18-pick-photo '+(favSelectedPhotoId===id?'v18-selected':'')+'" data-v18choose="'+esc(id)+'" aria-label="'+(favSelectedPhotoId===id?'Gekozen':'Kies deze outfitfoto')+'"><img src="'+photo+'" alt="Outfitfoto">'+(favSelectedPhotoId===id?'<small>✓ Gekozen</small>':'')+'</button>').join(''):'<p class="v17-summary">Voeg eerst een outfitfoto toe in Mijn schatkamer.</p>';
  const chosen=favEditIds.map(id=>items.find(x=>String(x.id)===id)).filter(Boolean);
  byId('v17Chosen').innerHTML=chosen.map(x=>'<button type="button" class="v17-piece selected" data-v17remove="'+esc(String(x.id))+'" title="Haal dit kledingstuk uit de favoriet">'+(x.photo?'<img src="'+x.photo+'" alt="">':'')+'<small>− '+esc(x.name)+'</small></button>').join('')||'<p class="v17-summary">Nog geen kleding gekozen.</p>';
  byId('v17Count').textContent=chosen.length+' van maximaal '+limit+' kledingstukken';
@@ -800,7 +832,7 @@ function renderFavoriteEditor(){
  const available=items.filter(x=>!favEditIds.includes(String(x.id))&&(!q||(x.name+' '+x.category+' '+x.color+' '+(x.notes||'')).toLowerCase().includes(q)));
  byId('v17CategoryPicker').innerHTML=groupedPicker(available)||'<p class="v17-summary">Geen kleding gevonden.</p>';
  byId('v17SaveFavorite').textContent=favEditId?'Wijzigingen bewaren':'Bewaar favoriet';
- byId('v17CancelFavorite').textContent=favPhotoBefore?'Sluiten':'Annuleren';
+ byId('v17CancelFavorite').textContent='Annuleren';
 }
 byId('v17CategoryPicker').addEventListener('click',e=>{const el=e.target.closest('[data-v17add]');if(!el)return;
  const id=el.dataset.v17add,limit=effectiveFavoritePhoto()?7:8;
@@ -809,6 +841,13 @@ byId('v17CategoryPicker').addEventListener('click',e=>{const el=e.target.closest
 byId('v17Chosen').addEventListener('click',e=>{const el=e.target.closest('[data-v17remove]');if(!el)return;
  favEditIds=favEditIds.filter(id=>id!==el.dataset.v17remove);renderFavoriteEditor()});
 byId('v17Search').oninput=renderFavoriteEditor;
+byId('v18PhotoChoices').addEventListener('click',e=>{
+ const button=e.target.closest('[data-v18choose]');if(!button)return;
+ const id=button.dataset.v18choose;
+ if(!v18LookCache.has(id))return;
+ if(favEditIds.length>7){alert('Haal eerst één kledingstuk weg. Bij een outfitfoto passen maximaal zeven kledingstukken.');return}
+ favSelectedPhotoId=id;renderFavoriteEditor();
+});
 // Save a chosen complete-outfit photo immediately, even before any clothes are selected.
 function v17PhotoMessage(message,isError=false){const el=byId('v17PhotoStatus');el.textContent=message;el.classList.toggle('v17-error',isError)}
 function v17PhotoBusy(busy){favPhotoSaveBusy=busy;for(const id of ['v17PhotoInput','v17RemovePhoto','v17SaveFavorite','v17CancelFavorite','v17BackFavorites'])byId(id).disabled=busy}
@@ -858,55 +897,92 @@ byId('v17PhotoInput').onchange=async e=>{
  }catch(err){v17PhotoMessage('Foto niet opgeslagen: '+(err.message||err),true);alert('De outfitfoto is niet opgeslagen: '+(err.message||err));}
  finally{e.target.value='';v17PhotoBusy(false)}
 };
-byId('v17RemovePhoto').onclick=async()=>{
- if(favPhotoSaveBusy||!favEditId||!effectiveFavoritePhoto())return;
- if(!confirm('Deze outfitfoto verwijderen?'))return;
- v17PhotoBusy(true);v17PhotoMessage('Outfitfoto wordt verwijderd…');
- try{
-  await ensureDBReady();const id=favEditId;
-  await new Promise((resolve,reject)=>{const tx=db.transaction('looks','readwrite');tx.oncomplete=resolve;tx.onabort=()=>reject(tx.error||Error('Verwijderen mislukt'));tx.objectStore('looks').delete(id)});
-  favPhotoBefore=null;favPhotoPending=null;favPhotoDelete=false;
-  const savedFavorite=v7Favorites().find(f=>String(f.id)===id);
-  if(savedFavorite&&!(savedFavorite.ids||[]).length&&!favEditIds.length){
-   const state=v7Read();state.favorites=(state.favorites||[]).filter(f=>String(f.id)!==id);
-   localStorage.setItem('mijn-kledingkast-live-v7-extras',JSON.stringify(state));
-   favEditId=null;
-  }
-  if(window.__mkRefreshLookCache)await window.__mkRefreshLookCache();renderFavoriteEditor();v17PhotoMessage('Foto verwijderd.');
- }catch(err){v17PhotoMessage('Foto verwijderen mislukt: '+err.message,true);alert('Foto verwijderen mislukt: '+err.message)}
- finally{v17PhotoBusy(false)}
+byId('v17RemovePhoto').onclick=()=>{
+ favSelectedPhotoId=null;renderFavoriteEditor();
+ byId('v17PhotoStatus').textContent='Geen outfitfoto gekozen. Bewaar je favoriet om dit vast te leggen.';
 };
 byId('v17BackFavorites').onclick=()=>closeFavoriteEditor();
 byId('v17CancelFavorite').onclick=()=>closeFavoriteEditor();
 byId('v17SaveFavorite').onclick=async()=>{
  const ids=[...new Set(favEditIds)].filter(id=>items.some(x=>String(x.id)===id));
- if(!ids.length&&!effectiveFavoritePhoto()){alert('Kies eerst een foto of kledingstukken voor deze favoriet.');return}
- const photo=effectiveFavoritePhoto(),max=photo?7:8;
- if(ids.length>max){alert('Haal eerst '+(ids.length-max)+' kledingstuk(ken) uit de favoriet om plaats te maken voor de outfitfoto.');return}
+ const lookPhotoId=favSelectedPhotoId&&v18LookCache.has(String(favSelectedPhotoId))?String(favSelectedPhotoId):null;
+ if(!ids.length&&!lookPhotoId){alert('Kies eerst een outfitfoto of kledingstukken voor deze favoriet.');return}
+ const limit=lookPhotoId?7:8;
+ if(ids.length>limit){alert('Bij deze outfitfoto passen maximaal '+limit+' kledingstukken.');return}
  const state=v7Read();state.favorites=state.favorites||[];
  const sig=ids.slice().sort().join('|');
- if(ids.length&&state.favorites.some(f=>String(f.id)!==favEditId&&(f.ids||[]).map(String).sort().join('|')===sig)){
-  alert('Deze combinatie bestaat al bij je favorieten.');return}
- const id=favEditId||('v16w-'+Date.now()+'-'+Math.random().toString(36).slice(2));
+ if(ids.length&&state.favorites.some(f=>String(f.id)!==favEditId&&(f.ids||[]).map(String).sort().join('|')===sig&&String(f.lookPhotoId||'')===String(lookPhotoId||''))){alert('Deze combinatie staat al bij je favorieten.');return}
+ const id=favEditId||('fav-'+Date.now()+'-'+Math.random().toString(36).slice(2));
  const previous=state.favorites.find(f=>String(f.id)===id);
- const newer={...(previous||{}),id,ids,date:previous?.date||day(),name:previous?.name||''};
- if(previous)state.favorites=state.favorites.map(f=>String(f.id)===id?newer:f);
- else state.favorites.push(newer);
+ const changed={...(previous||{}),id,ids,lookPhotoId,date:previous?.date||day(),name:previous?.name||''};
+ if(previous)state.favorites=state.favorites.map(f=>String(f.id)===id?changed:f);
+ else state.favorites.push(changed);
  try{
   const json=JSON.stringify(state);localStorage.setItem('mijn-kledingkast-live-v7-extras',json);
-  if(JSON.parse(localStorage.getItem('mijn-kledingkast-live-v7-extras')||'{}').favorites?.find(f=>String(f.id)===id)?.ids?.length!==ids.length)throw Error('Favoriet is niet opgeslagen.');
-  if(favPhotoDelete&&favPhotoBefore){await new Promise((res,rej)=>{const q=db.transaction('looks','readwrite').objectStore('looks').delete(id);q.onsuccess=res;q.onerror=()=>rej(q.error)})}
-  if(favPhotoPending){await transactionWriteMany('looks',[{id,photo:favPhotoPending}])}
-  if(window.__mkRefreshLookCache)await window.__mkRefreshLookCache();
+  const saved=JSON.parse(localStorage.getItem('mijn-kledingkast-live-v7-extras')||'{}').favorites?.find(f=>String(f.id)===id);
+  if(!saved||saved.ids.length!==ids.length||saved.lookPhotoId!==lookPhotoId)throw Error('Favoriet is niet opgeslagen.');
   v7RenderFavorites();if(window.__mkGenerateLooks)window.__mkGenerateLooks();note('Favoriet bewaard.');closeFavoriteEditor(true);
- }catch(err){alert('Bewaren is niet volledig gelukt: '+err.message+' Maak een back-up voordat je doorgaat.')}
+ }catch(err){alert('Bewaren mislukt: '+err.message)}
 };
 // Capture edit clicks before the old, unrelated look editor receives them.
 byId('favoritesResults').addEventListener('click',e=>{const pencil=e.target.closest('[data-edit-favorite]');if(!pencil)return;
  e.preventDefault();e.stopImmediatePropagation();openFavoriteEditor(pencil.dataset.editFavorite);
 },true);
 addFavoriteBtn.onclick=()=>openFavoriteEditor(null);
-byId('wardrobeLooksOpen').onclick=()=>openFavoriteEditor(null);
+// Separate collection of complete outfit pictures, not clothing items.
+const categoryChoice=byId('categoryFilter');
+if(![...categoryChoice.options].some(o=>o.value==='Outfitfoto\u0027s')){
+ const opt=document.createElement('option');opt.value="Outfitfoto's";opt.textContent="Outfitfoto's";categoryChoice.append(opt);
+}
+const oldCategoryChange=categoryChoice.onchange;
+categoryChoice.addEventListener('change',()=>{const picturesOnly=categoryChoice.value==="Outfitfoto's";
+ byId('v18OutfitCategory').hidden=!!categoryChoice.value&&!picturesOnly;
+ byId('count').hidden=picturesOnly;byId('grid').hidden=picturesOnly;
+});
+byId('wardrobeLooksOpen').onclick=()=>{
+ showTab('wardrobe');categoryChoice.value="Outfitfoto's";categoryChoice.dispatchEvent(new Event('change'));
+ byId('v18OutfitCategory').scrollIntoView({block:'start',behavior:'smooth'});
+};
+function galleryStatus(text,err=false){const status=byId('v18GalleryStatus');status.textContent=text;status.style.color=err?'#a53c36':'#68584e'}
+function renderOutfitGallery(){
+ const all=[...v18LookCache.entries()].filter(([id,photo])=>typeof photo==='string'&&photo.startsWith('data:image/'));
+ byId('v18PhotoCount').textContent=String(all.length);
+ byId('v18PhotoGallery').innerHTML=all.length?all.map(([id,photo])=>'<article class="v18-photo-tile"><img src="'+photo+'" alt="Complete outfit"><div class="v18-photo-actions"><button type="button" class="btn" data-v18replace="'+esc(id)+'">Vervang</button><button type="button" class="btn" data-v18delete="'+esc(id)+'">Verwijder</button></div></article>').join(''):'<p class="v17-summary">Nog geen outfitfoto’s.</p>';
+ byId('v18OutfitCategory').hidden=!!categoryChoice.value&&categoryChoice.value!=="Outfitfoto's";
+}
+byId('v18AddPhoto').onclick=()=>{galleryReplaceId=null;byId('v18GalleryInput').value='';byId('v18GalleryInput').click()};
+byId('v18PhotoGallery').onclick=async e=>{
+ const replace=e.target.closest('[data-v18replace]'),remove=e.target.closest('[data-v18delete]');
+ if(replace){galleryReplaceId=replace.dataset.v18replace;byId('v18GalleryInput').value='';byId('v18GalleryInput').click();return}
+ if(!remove)return;
+ const id=remove.dataset.v18delete;
+ const used=v7Favorites().filter(f=>String(Object.prototype.hasOwnProperty.call(f,'lookPhotoId')?f.lookPhotoId:f.id)===id);
+ if(!confirm('Deze outfitfoto verwijderen?'+(used.length?' De foto verdwijnt ook uit '+used.length+' favoriet(en).':'')))return;
+ try{await ensureDBReady();await new Promise((resolve,reject)=>{
+  const tx=db.transaction('looks','readwrite');tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error||Error('Verwijderen mislukt'));
+  tx.objectStore('looks').delete(id);
+ });
+ if(used.length){const state=v7Read();state.favorites=(state.favorites||[]).map(f=>used.some(u=>String(u.id)===String(f.id))?{...f,lookPhotoId:null}:f);localStorage.setItem('mijn-kledingkast-live-v7-extras',JSON.stringify(state))}
+ await window.__mkRefreshLookCache();renderOutfitGallery();galleryStatus('Outfitfoto verwijderd.');
+ }catch(error){galleryStatus('Verwijderen mislukt: '+error.message,true)}
+};
+byId('v18GalleryInput').onchange=async e=>{
+ const file=e.target.files?.[0];if(!file)return;
+ const id=galleryReplaceId||('outfitfoto-'+Date.now()+'-'+Math.random().toString(36).slice(2));
+ galleryStatus('Outfitfoto opslaan…');byId('v18AddPhoto').disabled=true;
+ try{await ensureDBReady();const img=await v17EncodePhoto(file);
+  await transactionWriteMany('looks',[{id,photo:img,type:'outfitfoto',updated:day()}]);
+  const stored=(await lookRecords()).find(p=>String(p.id)===id);
+  if(!stored||stored.photo!==img)throw Error('De foto is niet teruggevonden.');
+  await window.__mkRefreshLookCache();renderOutfitGallery();galleryStatus('Outfitfoto opgeslagen.');
+ }catch(err){galleryStatus('Outfitfoto niet opgeslagen: '+err.message,true);alert('Outfitfoto niet opgeslagen: '+err.message)}
+ finally{galleryReplaceId=null;e.target.value='';byId('v18AddPhoto').disabled=false}
+};
+const originalCacheRefresh=window.__mkRefreshLookCache;
+window.__mkRefreshLookCache=async()=>{await originalCacheRefresh();v18LookCache=new Map((await lookRecords()).map(x=>[String(x.id),x.photo]));renderOutfitGallery()};
+const originalRestore=byId('importFile').onchange;
+byId('importFile').onchange=async event=>{await originalRestore(event);await window.__mkRefreshLookCache()};
+initDB().then(async()=>{await window.__mkRefreshLookCache();renderOutfitGallery()}).catch(error=>galleryStatus('Outfitfoto’s laden mislukt: '+error.message,true));
 // Flight clothes selector is moved before the luggage contents so it is immediately visible.
 function repositionFlight(){const panel=byId('travelResults');
  const title=[...panel.querySelectorAll('h3')].find(h=>h.textContent.trim()==='Wat trek ik aan tijdens de reis?');

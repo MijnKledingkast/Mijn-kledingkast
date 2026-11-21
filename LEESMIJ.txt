@@ -1,5 +1,1 @@
-Mijn Kledingkast - definitieve uitgave outfitfoto's
-
-Foto's die bij Mijn schatkamer > Outfitfoto's worden gekozen, worden direct opgeslagen. Ook een foto zonder kledingstukken is toegestaan. Kleding en accessoires kunnen later worden toegevoegd.
-
-Deze uitgave is voor het vaste GitHub-project Mijn-kledingkast, niet voor de testwebsite. Maak vooraf een actuele back-up van de vaste kledingkast. Je persoonlijke back-up hoort niet op GitHub.
+Mijn Kledingkast: outfitfoto’s als eigen categorie. Foto’s toevoegen in Mijn schatkamer; kies opgeslagen foto’s bij favorieten. Maak vóór uploaden een volledige back-up. De persoonlijke foto’s en kledinggegevens worden niet meegeleverd.
